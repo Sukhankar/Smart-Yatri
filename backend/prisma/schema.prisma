@@ -1,0 +1,385 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+//////////////////////////////
+//  ROLE & PERMISSION MODELS
+//////////////////////////////
+
+model PermissionCatalog {
+  id                    Int                     @id @default(autoincrement())
+  code                  String                  @unique
+  title                 String
+  category              String
+  type                  String?
+  route                 String
+  active                Boolean                 @default(true)
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+
+  rolePermissions       RolePermission[]
+  userCustomPermissions UserCustomPermission[]
+}
+
+model Role {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  description     String?
+  isDefault       Boolean           @default(false)
+  type            String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  rolePermissions RolePermission[]
+  userLogins      UserLogin[]
+}
+
+model RolePermission {
+  id            Int                @id @default(autoincrement())
+  roleId        Int
+  role          Role               @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  permissionId  Int
+  permission    PermissionCatalog  @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}
+
+//////////////////////////////
+//    USER LOGIN MODEL
+//////////////////////////////
+
+model UserLogin {
+  id         Int      @id @default(autoincrement())
+  username   String   @unique
+  password   String
+  email      String?
+  lastLogin  DateTime?
+
+  // STUDENT | STAFF | MANAGER | CONDUCTOR
+  loginType  String
+
+  // Role relation
+  roleId     Int?
+  assignedRole Role? @relation(fields: [roleId], references: [id])
+
+  // Profile (One to One)
+  profile    UserProfile?
+
+  // Sessions
+  sessions               Session[]
+  resetPasswordOtps      PasswordResetOtp[]
+  customPermissions      UserCustomPermission[]
+
+  // User actions
+  passes     Pass[]
+  bookings   Booking[]
+  payments   Payment[]
+  tickets    Ticket[]
+  travelHistory TravelHistory[]
+  notifications Notification[]
+  
+  // Manager approvals
+  passApprovalsAsManager PassApproval[] @relation("passApprovalManager")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+//////////////////////////////
+//   USER PROFILE (NEW)
+//////////////////////////////
+
+model UserProfile {
+  id           Int        @id @default(autoincrement())
+  userId       Int        @unique
+  user         UserLogin  @relation(fields: [userId], references: [id])
+
+  fullName     String
+  schoolName   String?
+  roleType     String     // STUDENT or STAFF
+  idNumber     String?    // studentId or staffId
+  classOrPosition String? // Grade or Staff Position
+  photo        String?    // profile image URL
+  qrId         String?    @unique // Unique QR code ID for each user
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+//////////////////////////////
+// SESSION TABLE
+//////////////////////////////
+
+model Session {
+  id        Int       @id @default(autoincrement())
+  token     String    @unique
+  userId    Int
+  user      UserLogin @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  lastUsed  DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+//////////////////////////////
+// PASSWORD RESET OTP
+//////////////////////////////
+
+model PasswordResetOtp {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  user          UserLogin @relation(fields: [userId], references: [id])
+
+  email         String
+  otp           String
+  expiresAt     DateTime
+  used          Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+//////////////////////////////
+// CUSTOM PERMISSIONS
+//////////////////////////////
+
+model UserCustomPermission {
+  id             Int                @id @default(autoincrement())
+  userId         Int
+  user           UserLogin          @relation(fields: [userId], references: [id])
+
+  permissionId   Int
+  permission     PermissionCatalog  @relation(fields: [permissionId], references: [id])
+
+  allow          Boolean            @default(true)
+}
+
+//////////////////////////////
+// PASS SYSTEM MODELS
+//////////////////////////////
+
+enum PassStatus {
+  PENDING
+  PENDING_APPROVAL
+  PENDING_PAYMENT
+  ACTIVE
+  INACTIVE
+  DISABLED
+  EXPIRED
+  RENEWED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Pass {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  user         UserLogin  @relation(fields: [userId], references: [id])
+
+  passCode     String     @unique
+  type         String     // DAILY, WEEKLY, MONTHLY, ANNUAL
+  price        Int        @default(0)  // In rupees or cents
+  status       PassStatus @default(PENDING)
+
+  startDate    DateTime
+  endDate      DateTime
+  renewalDate  DateTime?  // For renewal tracking
+
+  managerApproval PassApproval?
+  paymentApproval PaymentApproval?
+  payments     Payment[]
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model PassApproval {
+  id            Int           @id @default(autoincrement())
+  passId        Int           @unique
+  pass          Pass          @relation(fields: [passId], references: [id], onDelete: Cascade)
+
+  managerId     Int
+  manager       UserLogin     @relation(fields: [managerId], references: [id], name: "passApprovalManager")
+
+  status        ApprovalStatus @default(PENDING)
+  rejectionReason String?
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model PaymentApproval {
+  id            Int           @id @default(autoincrement())
+  passId        Int           @unique
+  pass          Pass          @relation(fields: [passId], references: [id], onDelete: Cascade)
+
+  paymentId     Int           @unique
+  payment       Payment       @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  status        ApprovalStatus @default(PENDING)
+  amount        Int
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Payment {
+  id           Int              @id @default(autoincrement())
+
+  userId       Int
+  user         UserLogin        @relation(fields: [userId], references: [id])
+
+  passId       Int?
+  pass         Pass?            @relation(fields: [passId], references: [id])
+
+  amount       Int
+  status       PaymentStatus    @default(PENDING)
+  method       String?          // CARD, UPI, NET_BANKING, etc.
+  reference    String?          // Transaction reference
+  description  String?
+
+  paymentApproval PaymentApproval?
+
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+//////////////////////////////
+// BUS & BOOKING
+//////////////////////////////
+
+model Bus {
+  id             Int       @id @default(autoincrement())
+  numberPlate    String    @unique
+  from           String
+  to             String
+  departureTime  DateTime
+  arrivalTime    DateTime
+  totalSeats     Int
+
+  bookings       Booking[]
+}
+
+model Booking {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  user      UserLogin  @relation(fields: [userId], references: [id])
+
+  busId     Int
+  bus       Bus        @relation(fields: [busId], references: [id])
+
+  seatNo    String
+  bookedAt  DateTime   @default(now())
+}
+
+//////////////////////////////
+// TICKET SYSTEM
+//////////////////////////////
+
+model Ticket {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  user          UserLogin @relation(fields: [userId], references: [id])
+  
+  routeId       Int?
+  route         Route?    @relation(fields: [routeId], references: [id])
+  
+  purchaseDate  DateTime  @default(now())
+  paymentStatus PaymentStatus @default(PENDING)
+  ticketType    String    // DAILY, MONTHLY, YEARLY
+  validUntil    DateTime?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([routeId])
+}
+
+//////////////////////////////
+// NOTIFICATION SYSTEM
+//////////////////////////////
+
+model Notification {
+  id            Int       @id @default(autoincrement())
+  userId        Int?
+  user          UserLogin? @relation(fields: [userId], references: [id])
+  
+  broadcastRole String?   // If set, notification is for all users with this role
+  
+  title         String
+  message       String
+  isRead        Boolean   @default(false)
+  type          String?   // INFO, SUCCESS, WARNING, ERROR
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([broadcastRole])
+  @@index([isRead])
+}
+
+//////////////////////////////
+// ROUTE & SCHEDULE MANAGEMENT
+//////////////////////////////
+
+model Route {
+  id            Int       @id @default(autoincrement())
+  name          String
+  stops         String    // JSON array of stops
+  scheduleTime  String    // JSON array of schedule times
+  active        Boolean   @default(true)
+  
+  tickets       Ticket[]
+  travelHistory TravelHistory[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([active])
+}
+
+//////////////////////////////
+// TRAVEL HISTORY
+//////////////////////////////
+
+model TravelHistory {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  user          UserLogin @relation(fields: [userId], references: [id])
+  
+  routeId       Int
+  route         Route     @relation(fields: [routeId], references: [id])
+  
+  travelDate    DateTime  @default(now())
+  ticketType    String    // DAILY, PASS
+  ticketId      Int?      // Reference to ticket if daily ticket
+  passId        Int?      // Reference to pass if used pass
+  
+  conductorId   Int?      // ID of conductor who validated
+  validatedAt   DateTime?
+  
+  createdAt     DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([routeId])
+  @@index([travelDate])
+}
