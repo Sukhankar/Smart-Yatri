@@ -1,16 +1,100 @@
-# React + Vite
+# Smart Yatri
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Smart Yatri is a web-based system designed for streamlined bus travel management for students, faculty, and operators. Easily book tickets, manage passes, review travel history, and validate bus rides—all in a modern, user-friendly interface.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **For Students & Faculty**
+  - Dashboard overview of your tickets and pass status.
+  - Book one-time tickets or purchase monthly passes.
+  - View and download all purchased tickets.
+  - Display travel passes as QR codes for easy scanning.
+  - View detailed travel history records.
 
-## React Compiler
+- **For Operators & Admins**
+  - Validate tickets and passes with in-app QR code scanner.
+  - Manage users, view bus routes, and monitor travel analytics.
+  - View comprehensive travel and validation history.
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## Tech Stack
 
-## Expanding the ESLint configuration
+- **Frontend:** React (Vite + Tailwind CSS UI)
+- **Backend:** Node.js / Express (assumed)
+- **Authentication:** JWT or session-based (implementation dependent)
+- **QR Code Generation:** [qrcode.react](https://github.com/zpao/qrcode.react)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/)
+- [npm](https://npmjs.com/)
+
+### Installation
+
+1. **Clone the repository**
+    ```bash
+    git clone https://github.com/your-username/smart-yatri.git
+    cd smart-yatri
+    ```
+
+2. **Install dependencies**
+    ```bash
+    cd frontend
+    npm install
+    ```
+
+3. **Start the frontend**
+    ```bash
+    npm run dev
+    ```
+
+4. **(Optional) Start the backend**  
+   Refer to the `/backend` directory and README if backend code is included.
+
+### Project Structure (Frontend)
+
+```
+frontend/
+├── src/
+│   ├── components/        # Reusable UI components (Sidebar, QRDisplay, etc.)
+│   ├── pages/             # Main application pages (Dashboard, BookTicket, TravelHistory, etc.)
+│   ├── services/          # API abstraction and service logic
+│   ├── App.jsx
+│   └── main.jsx
+├── public/
+└── package.json
+```
+
+## Usage
+
+- **Sign up** as a student or faculty user.
+- **Book tickets** or **purchase a pass**, view all from your dashboard.
+- **Show your QR code** to bus operators for boarding.
+- **Operators** scan and validate tickets or passes using their dashboard.
+
+## Screenshots
+
+> Screenshots and UI GIFs coming soon!
+
+## Contributing
+
+1. Fork this repository
+2. Create a new branch:
+    ```bash
+    git checkout -b my-feature
+    ```
+3. Commit your changes and push:
+    ```bash
+    git commit -am 'Add new feature'
+    git push origin my-feature
+    ```
+4. Open a pull request
+
+## License
+
+[MIT License](LICENSE)
+
+---
+
+_“Smart Yatri – Making public transportation effortless and smart!”_
