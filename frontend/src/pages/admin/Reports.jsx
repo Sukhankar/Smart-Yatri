@@ -1,9 +1,25 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import { reportService } from '../../services/reportService';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from 'recharts';
+
+const REVENUE_COLORS = ['#ef4444', '#f97316', '#22c55e', '#3b82f6', '#a855f7', '#ec4899'];
+const PIE_COLORS = ['#ef4444', '#22c55e', '#3b82f6', '#eab308', '#6366f1', '#14b8a6'];
 
 export default function Reports() {
   const [stats, setStats] = useState(null);
+  const [analytics, setAnalytics] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,6 +31,7 @@ export default function Reports() {
     try {
       const res = await reportService.getDashboardStats();
       setStats(res.stats);
+      setAnalytics(res.analytics || null);
       setRecentActivity(res.recentActivity || []);
     } catch (err) {
       console.error('Error loading reports:', err);
@@ -78,6 +95,95 @@ export default function Reports() {
             <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-sm font-semibold text-gray-500 mb-2">Recent Passes (30 days)</h3>
               <p className="text-3xl font-bold text-cyan-600">{stats.recentPasses}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Visual Reports */}
+        {analytics && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
+              <h2 className="text-base md:text-lg font-semibold mb-3 text-gray-700">
+                Monthly Revenue
+              </h2>
+              {(!analytics.monthlyRevenue || analytics.monthlyRevenue.length === 0) ? (
+                <p className="text-sm text-gray-500">No revenue data available.</p>
+              ) : (
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={analytics.monthlyRevenue}>
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
+                        {analytics.monthlyRevenue.map((entry, index) => (
+                          <Cell
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={`rev-${index}`}
+                            fill={REVENUE_COLORS[index % REVENUE_COLORS.length]}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
+              <h2 className="text-base md:text-lg font-semibold mb-3 text-gray-700">
+                Ticket vs Pass Usage
+              </h2>
+              {(!analytics.ticketVsPassUsage || analytics.ticketVsPassUsage.length === 0) ? (
+                <p className="text-sm text-gray-500">No usage data available.</p>
+              ) : (
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={analytics.ticketVsPassUsage}
+                        dataKey="count"
+                        nameKey="type"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        label
+                      >
+                        {analytics.ticketVsPassUsage.map((entry, index) => (
+                          <Cell
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={`tvp-${index}`}
+                            fill={PIE_COLORS[index % PIE_COLORS.length]}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-4 md:p-6 lg:col-span-2">
+              <h2 className="text-base md:text-lg font-semibold mb-3 text-gray-700">
+                User Type Distribution
+              </h2>
+              {(!analytics.userTypeDistribution ||
+                analytics.userTypeDistribution.length === 0) ? (
+                <p className="text-sm text-gray-500">No user type data available.</p>
+              ) : (
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={analytics.userTypeDistribution}>
+                      <XAxis dataKey="type" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="count" radius={[6, 6, 0, 0]} fill="#f97316" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
             </div>
           </div>
         )}

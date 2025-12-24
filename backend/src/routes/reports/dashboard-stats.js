@@ -23,8 +23,10 @@ const dashboardStatsHandler = async (req, res) => {
     }
 
     const now = new Date();
-    const todayStart = new Date(now.setHours(0, 0, 0, 0));
-    const todayEnd = new Date(now.setHours(23, 59, 59, 999));
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(now);
+    todayEnd.setHours(23, 59, 59, 999);
 
     // Total active students/staff
     const totalActiveUsers = await prisma.userLogin.count({
@@ -100,6 +102,70 @@ const dashboardStatsHandler = async (req, res) => {
       },
     });
 
+    // Monthly revenue (last 6 months, paid payments)
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+    sixMonthsAgo.setDate(1);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    const paidPayments = await prisma.payment.findMany({
+      where: {
+        status: 'PAID',
+        createdAt: { gte: sixMonthsAgo },
+      },
+      select: {
+        amount: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const monthlyRevenueMap = new Map();
+    for (const p of paidPayments) {
+      const d = new Date(p.createdAt);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      monthlyRevenueMap.set(key, (monthlyRevenueMap.get(key) || 0) + p.amount);
+    }
+
+    const monthlyRevenue = Array.from(monthlyRevenueMap.entries())
+      .sort((a, b) => (a[0] > b[0] ? 1 : -1))
+      .map(([month, revenue]) => ({ month, revenue }));
+
+    // Ticket vs pass usage from travel history (last 30 days)
+    const history = await prisma.travelHistory.findMany({
+      where: {
+        travelDate: { gte: thirtyDaysAgo },
+      },
+      select: {
+        ticketType: true,
+      },
+    });
+
+    let ticketUsage = 0;
+    let passUsage = 0;
+    for (const h of history) {
+      if (h.ticketType === 'PASS') passUsage += 1;
+      else ticketUsage += 1;
+    }
+
+    const ticketVsPassUsage = [
+      { type: 'Ticket', count: ticketUsage },
+      { type: 'Pass', count: passUsage },
+    ];
+
+    // User type distribution
+    const userTypeCounts = await prisma.userLogin.groupBy({
+      by: ['loginType'],
+      _count: {
+        _all: true,
+      },
+    });
+
+    const userTypeDistribution = userTypeCounts.map((u) => ({
+      type: u.loginType,
+      count: u._count._all,
+    }));
+
     return res.json({
       success: true,
       stats: {
@@ -111,6 +177,11 @@ const dashboardStatsHandler = async (req, res) => {
         activeRoutes,
         activeBuses,
         recentPasses,
+      },
+      analytics: {
+        monthlyRevenue,
+        ticketVsPassUsage,
+        userTypeDistribution,
       },
       recentActivity: recentActivity.map((activity) => ({
         id: activity.id,

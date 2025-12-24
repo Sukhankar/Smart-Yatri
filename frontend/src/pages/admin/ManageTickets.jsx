@@ -1,119 +1,102 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
-import { ticketService } from '../../services/ticketService';
+import { adminTicketService } from '../../services/adminTicketService';
 
-function getTicketPriceForRole(ticketType, userRole) {
-  let basePrice = 50;
-  if (userRole === 'STUDENT') {
-    basePrice = 40;
-  } else if (userRole === 'STAFF') {
-    basePrice = 45;
-  } else if (userRole === 'ADMIN' || userRole === 'MANAGER') {
-    basePrice = 0;
-  }
-  return basePrice;
+// Default discounts – must stay in sync with backend defaults in PricingRule
+function deriveUserPricesFromBase(basePrice) {
+  const base = Number(basePrice) || 0;
+  const studentPrice = Math.round(base * 0.7);
+  const staffPrice = Math.round(base * 0.85);
+  const regularPrice = base;
+  return { studentPrice, staffPrice, regularPrice };
 }
 
-// Separate fields for city and stop; routeFromCityAndStop is no longer on the form
-const emptyTicket = {
-  userRole: '',
-  routeCity: '',
-  routeStop: '',
-  ticketType: 'DAILY',
-  price: 50,
-  // issuedDate: '',  // not needed, will be backend-generated on creation
+const emptySession = {
+  title: '',
+  routeInfo: '',
+  departureTime: '',
+  totalSeats: 40,
+  availableSeats: 40,
+  basePrice: 50,
 };
 
 export default function ManageTickets() {
-  const [tickets, setTickets] = useState([]);
+  const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
-    userRole: '',
-    routeCity: '',
-    routeStop: '',
-    search: '',
+    status: 'ACTIVE',
+    routeSearch: '',
+    fromDate: '',
+    toDate: '',
   });
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [editingTicket, setEditingTicket] = useState(null);
+  const [editingSession, setEditingSession] = useState(null);
   const [modalMode, setModalMode] = useState('add'); // 'add' or 'edit'
-  const [form, setForm] = useState(emptyTicket);
+  const [form, setForm] = useState(emptySession);
 
-  // Helper to compose and extract "city - stop" string
-  function routeString(city, stop) {
-    if (city && stop) return `${city} - ${stop}`;
-    if (city) return city;
-    if (stop) return stop;
-    return '';
-  }
-  function splitRoute(cityAndStopStr) {
-    if (!cityAndStopStr) return { city: '', stop: '' };
-    const parts = cityAndStopStr.split(' - ').map(x => x.trim());
-    return { city: parts[0] || '', stop: parts[1] || '' };
-  }
-
-  // Load adjusts for new route-based filters
   useEffect(() => {
-    loadTickets();
-    // eslint-disable-next-line
-  }, [filters]);
+    loadSessions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.status, filters.routeSearch, filters.fromDate, filters.toDate]);
 
-  async function loadTickets() {
+  async function loadSessions() {
     setLoading(true);
     setError('');
     try {
-      // Compose route string for filtering
-      const apiFilters = { ...filters };
-      if ((filters.routeCity || filters.routeStop)) {
-        apiFilters.routeName = routeString(filters.routeCity, filters.routeStop);
-        delete apiFilters.routeCity;
-        delete apiFilters.routeStop;
-      } else if ('routeFromCityAndStop' in apiFilters) {
-        apiFilters.routeName = apiFilters.routeFromCityAndStop;
-        delete apiFilters.routeFromCityAndStop;
-      }
-      const res = await ticketService.listTickets(apiFilters);
-      setTickets(res.tickets || []);
+      const res = await adminTicketService.listSessions(filters);
+      setSessions(res.sessions || []);
     } catch (err) {
-      setError(err.message || 'Failed to fetch tickets');
+      setError(err.message || 'Failed to fetch ticket sessions');
     } finally {
       setLoading(false);
     }
   }
 
   const handleAddClick = () => {
-    setForm(emptyTicket);
+    setForm(emptySession);
     setModalMode('add');
-    setEditingTicket(null);
+    setEditingSession(null);
     setShowModal(true);
   };
 
-  const handleEditClick = (ticket) => {
-    // Attempt to get the route from city and stop
-    const routeName = ticket.routeFromCityAndStop || ticket.routeName || '';
-    const { city, stop } = splitRoute(routeName);
+  const handleEditClick = (session) => {
     setForm({
-      ...ticket,
-      userRole: ticket.userRole || '',
-      routeCity: city,
-      routeStop: stop,
-      ticketType: ticket.ticketType || 'DAILY',
-      price: ticket.price || getTicketPriceForRole(ticket.ticketType, ticket.userRole)
-      // issuedDate: // not needed, can't edit
+      title: session.title,
+      routeInfo: session.routeInfo,
+      departureTime: session.departureTime
+        ? new Date(session.departureTime).toISOString().slice(0, 16)
+        : '',
+      totalSeats: session.totalSeats,
+      availableSeats: session.availableSeats,
+      basePrice: session.basePrice,
     });
     setModalMode('edit');
-    setEditingTicket(ticket);
+    setEditingSession(session);
     setShowModal(true);
   };
 
-  const handleDeleteClick = async (ticketId) => {
-    if (!window.confirm('Are you sure you want to delete this ticket?')) return;
+  const handleDeleteClick = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this ticket session?')) return;
     try {
       setLoading(true);
-      await ticketService.deleteTicket(ticketId);
-      await loadTickets();
+      await adminTicketService.deleteSession(id);
+      await loadSessions();
     } catch (err) {
-      setError(err.message || 'Failed to delete ticket');
+      setError(err.message || 'Failed to delete ticket session');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleStatus = async (session) => {
+    try {
+      setLoading(true);
+      const nextStatus = session.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+      await adminTicketService.updateStatus(session._id, nextStatus);
+      await loadSessions();
+    } catch (err) {
+      setError(err.message || 'Failed to update status');
     } finally {
       setLoading(false);
     }
@@ -121,17 +104,10 @@ export default function ManageTickets() {
 
   const handleModalChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'userRole' || name === 'ticketType') {
-      const updatedRole = name === 'userRole' ? value : form.userRole;
-      const updatedType = name === 'ticketType' ? value : form.ticketType;
-      setForm((prev) => ({
-        ...prev,
-        [name]: value,
-        price: getTicketPriceForRole(updatedType, updatedRole),
-      }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
-    }
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleModalSubmit = async (e) => {
@@ -140,26 +116,22 @@ export default function ManageTickets() {
     try {
       setLoading(true);
 
-      // Backend expects routeName as "city - stop" string.
-      let toSend = {
+      const payload = {
         ...form,
-        routeName: routeString(form.routeCity, form.routeStop)
+        totalSeats: Number(form.totalSeats),
+        availableSeats: Number(form.availableSeats),
+        basePrice: Number(form.basePrice),
       };
-      delete toSend.routeCity;
-      delete toSend.routeStop;
-
-      // Remove issuedDate; creation time is set by backend
-      delete toSend.issuedDate;
 
       if (modalMode === 'add') {
-        await ticketService.createTicket(toSend);
-      } else if (modalMode === 'edit' && editingTicket?.id) {
-        await ticketService.updateTicket(editingTicket.id, toSend);
+        await adminTicketService.createSession(payload);
+      } else if (modalMode === 'edit' && editingSession?._id) {
+        await adminTicketService.updateSession(editingSession._id, payload);
       }
       setShowModal(false);
-      await loadTickets();
+      await loadSessions();
     } catch (err) {
-      setError(err.message || 'Failed to save ticket');
+      setError(err.message || 'Failed to save ticket session');
     } finally {
       setLoading(false);
     }
@@ -174,16 +146,18 @@ export default function ManageTickets() {
         <div className="mb-8 flex flex-col sm:flex-row items-start justify-between gap-4">
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-red-700 to-pink-600 bg-clip-text text-transparent mb-2">
-              Manage Tickets (Admin)
+              Manage Ticket Sessions
             </h1>
-            <p className="text-gray-600">View, add, edit, and delete tickets.</p>
+            <p className="text-gray-600">
+              Configure routes, timings, seats and dynamic pricing for different user types.
+            </p>
           </div>
           <button
             type="button"
             onClick={handleAddClick}
             className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold rounded-xl px-6 py-3 shadow hover:from-red-600 hover:to-pink-600 transition-all duration-200 mt-4 sm:mt-0"
           >
-            + Add Ticket
+            + Add Session
           </button>
         </div>
 
@@ -191,47 +165,42 @@ export default function ManageTickets() {
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
-              <input
-                type="text"
-                placeholder="User role, route, ticket ID..."
-                value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">User Role</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
               <select
-                value={filters.userRole}
-                onChange={(e) => setFilters({ ...filters, userRole: e.target.value })}
+                value={filters.status}
+                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
               >
                 <option value="">All</option>
-                <option value="STUDENT">Student</option>
-                <option value="STAFF">Staff</option>
-                <option value="CONDUCTOR">Conductor</option>
-                <option value="MANAGER">Manager</option>
-                <option value="ADMIN">Admin</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Route</label>
               <input
                 type="text"
-                placeholder="City"
-                value={filters.routeCity}
-                onChange={(e) => setFilters({ ...filters, routeCity: e.target.value })}
+                placeholder="Search by route or title"
+                value={filters.routeSearch}
+                onChange={(e) => setFilters({ ...filters, routeSearch: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Stop</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">From</label>
               <input
-                type="text"
-                placeholder="Stop"
-                value={filters.routeStop}
-                onChange={(e) => setFilters({ ...filters, routeStop: e.target.value })}
+                type="date"
+                value={filters.fromDate}
+                onChange={(e) => setFilters({ ...filters, fromDate: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">To</label>
+              <input
+                type="date"
+                value={filters.toDate}
+                onChange={(e) => setFilters({ ...filters, toDate: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
               />
             </div>
@@ -244,13 +213,27 @@ export default function ManageTickets() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-white">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Ticket ID</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">User Role</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Route (City - Stop)</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Issued Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Title
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Route / Info
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Departure
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Seats (Avail / Total)
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Prices (Stu / Staff / Reg)
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
@@ -262,51 +245,73 @@ export default function ManageTickets() {
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-10 text-center text-red-500">{error}</td>
+                    <td colSpan={7} className="px-6 py-10 text-center text-red-500">
+                      {error}
+                    </td>
                   </tr>
-                ) : tickets.length === 0 ? (
+                ) : sessions.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-6 py-10 text-center text-gray-400 text-lg">
-                      No tickets found.
+                      No ticket sessions found.
                     </td>
                   </tr>
                 ) : (
-                  tickets.map((ticket) => {
-                    const cityAndStop = splitRoute(ticket.routeFromCityAndStop || ticket.routeName || '');
+                  sessions.map((session) => {
+                    const { studentPrice, staffPrice, regularPrice } = session;
                     return (
-                      <tr key={ticket.id} className="hover:bg-red-50/30 transition">
-                        <td className="px-6 py-4 whitespace-nowrap">{ticket.id}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{ticket.userRole || '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {routeString(cityAndStop.city, cityAndStop.stop) || '-'}
+                      <tr key={session._id} className="hover:bg-red-50/30 transition">
+                        <td className="px-6 py-4 whitespace-nowrap font-semibold text-gray-800">
+                          {session.title}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">{ticket.ticketType || '-'}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {(ticket.issuedDate
-                            ? new Date(ticket.issuedDate).toLocaleString()
-                            : (ticket.purchaseDate
-                              ? new Date(ticket.purchaseDate).toLocaleString()
-                              : '-'))}
+                        <td className="px-6 py-4 whitespace-nowrap max-w-xs">
+                          <span className="text-gray-600 line-clamp-2">{session.routeInfo}</span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap font-bold">
-                          ₹{getTicketPriceForRole(ticket.ticketType, ticket.userRole)}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                          {session.departureTime
+                            ? new Date(session.departureTime).toLocaleString()
+                            : '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                          {session.availableSeats} / {session.totalSeats}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold">
+                          <span className="block text-green-700">₹{studentPrice}</span>
+                          <span className="block text-amber-700">₹{staffPrice}</span>
+                          <span className="block text-gray-800">₹{regularPrice}</span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
+                              session.status === 'ACTIVE'
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-gray-200 text-gray-700'
+                            }`}
+                          >
+                            {session.status}
+                          </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap flex gap-2">
                           <button
-                            onClick={() => handleEditClick(ticket)}
+                            onClick={() => handleEditClick(session)}
                             className="bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl px-3 py-1 shadow hover:from-red-600 hover:to-pink-600 transition-all duration-200 font-semibold text-xs"
                           >
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDeleteClick(ticket.id)}
+                            onClick={() => handleToggleStatus(session)}
+                            className="bg-blue-100 text-blue-700 rounded-xl px-3 py-1 border border-blue-200 hover:bg-blue-200 hover:text-blue-900 transition-all duration-200 font-semibold text-xs"
+                          >
+                            {session.status === 'ACTIVE' ? 'Disable' : 'Enable'}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(session._id)}
                             className="bg-red-100 text-red-700 rounded-xl px-3 py-1 border border-red-200 hover:bg-red-200 hover:text-red-900 transition-all duration-200 font-semibold text-xs"
                           >
                             Delete
                           </button>
                         </td>
                       </tr>
-                    )
+                    );
                   })
                 )}
               </tbody>
@@ -325,52 +330,80 @@ export default function ManageTickets() {
               <div className="bg-white/70 rounded-2xl shadow-md border border-gray-100 px-4 py-10 text-center text-red-500">
                 {error}
               </div>
-            ) : tickets.length === 0 ? (
+            ) : sessions.length === 0 ? (
               <div className="bg-white/70 rounded-2xl shadow-md border border-gray-100 px-4 py-10 text-center text-gray-400 text-lg">
-                No tickets found.
+                No ticket sessions found.
               </div>
             ) : (
-              tickets.map((ticket) => {
-                const cityAndStop = splitRoute(ticket.routeFromCityAndStop || ticket.routeName || '');
+              sessions.map((session) => {
+                const { studentPrice, staffPrice, regularPrice } = session;
                 return (
                   <div
-                    key={ticket.id}
+                    key={session._id}
                     className="bg-white/80 rounded-2xl shadow-lg border border-gray-200 mb-2 p-4 flex flex-col gap-1"
                   >
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center justify-between gap-3 mb-2">
                       <div>
-                        <div className="text-base font-bold text-gray-700">Ticket #{ticket.id}</div>
-                        <div className="text-xs text-gray-500">
-                          {routeString(cityAndStop.city, cityAndStop.stop) || 'No Route'} · {ticket.userRole || 'N/A'}
+                        <div className="text-base font-bold text-gray-700">
+                          {session.title}
+                        </div>
+                        <div className="text-xs text-gray-500 line-clamp-2">
+                          {session.routeInfo}
                         </div>
                       </div>
-                    </div>
-                    <div className="flex flex-wrap gap-4 items-center mb-1">
-                      <div>
-                        <span className="text-xs text-gray-400 mr-1">Type:</span>
-                        <span className="text-sm font-semibold text-gray-600">{ticket.ticketType}</span>
-                      </div>
-                      <div>
-                        <span className="text-xs text-gray-400 mr-1">Price:</span>
-                        <span className="text-sm font-semibold text-gray-700">₹{getTicketPriceForRole(ticket.ticketType, ticket.userRole)}</span>
-                      </div>
+                      <span
+                        className={`inline-flex px-2 py-1 rounded-full text-[10px] font-semibold ${
+                          session.status === 'ACTIVE'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-gray-200 text-gray-700'
+                        }`}
+                      >
+                        {session.status}
+                      </span>
                     </div>
                     <div className="text-xs text-gray-500 mb-2">
-                      Issued: {(ticket.issuedDate
-                        ? new Date(ticket.issuedDate).toLocaleString()
-                        : (ticket.purchaseDate
-                          ? new Date(ticket.purchaseDate).toLocaleString()
-                          : '-'))}
+                      Departure:{' '}
+                      {session.departureTime
+                        ? new Date(session.departureTime).toLocaleString()
+                        : '-'}
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-4 items-center mb-1 text-xs">
+                      <span className="text-gray-600">
+                        Seats:{' '}
+                        <span className="font-semibold">
+                          {session.availableSeats} / {session.totalSeats}
+                        </span>
+                      </span>
+                      <span className="text-gray-600">
+                        Prices:{' '}
+                        <span className="font-semibold text-green-700">
+                          Stu ₹{studentPrice}
+                        </span>
+                        {', '}
+                        <span className="font-semibold text-amber-700">
+                          Staff ₹{staffPrice}
+                        </span>
+                        {', '}
+                        <span className="font-semibold text-gray-800">
+                          Reg ₹{regularPrice}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="flex gap-2 mt-2">
                       <button
-                        onClick={() => handleEditClick(ticket)}
+                        onClick={() => handleEditClick(session)}
                         className="bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl px-4 py-2 shadow hover:from-red-600 hover:to-pink-600 transition-all duration-200 text-xs font-semibold"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDeleteClick(ticket.id)}
+                        onClick={() => handleToggleStatus(session)}
+                        className="bg-blue-100 text-blue-700 rounded-xl px-4 py-2 border border-blue-200 hover:bg-blue-200 hover:text-blue-900 transition-all duration-200 text-xs font-semibold"
+                      >
+                        {session.status === 'ACTIVE' ? 'Disable' : 'Enable'}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(session._id)}
                         className="bg-red-100 text-red-700 rounded-xl px-4 py-2 border border-red-200 hover:bg-red-200 hover:text-red-900 transition-all duration-200 text-xs font-semibold"
                       >
                         Delete
@@ -383,7 +416,7 @@ export default function ManageTickets() {
           </div>
         </div>
 
-        {/* Modal: Add/Edit Ticket */}
+        {/* Modal: Add/Edit Session */}
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="relative bg-white rounded-2xl p-4 sm:p-6 w-full max-w-lg sm:max-w-2xl mx-2 sm:mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
@@ -396,81 +429,127 @@ export default function ManageTickets() {
               </button>
               <div className="mb-2">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-red-700 to-pink-600 bg-clip-text text-transparent">
-                  {modalMode === 'add' ? 'Add Ticket' : 'Edit Ticket'}
+                  {modalMode === 'add' ? 'Add Ticket Session' : 'Edit Ticket Session'}
                 </h2>
               </div>
               {error && <div className="mb-2 text-red-500">{error}</div>}
               <form onSubmit={handleModalSubmit} className="space-y-4 mt-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">User Role</label>
-                    <select
-                      name="userRole"
-                      value={form.userRole}
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      Session Title
+                    </label>
+                    <input
+                      name="title"
+                      value={form.title}
                       onChange={handleModalChange}
+                      placeholder="e.g. Morning College Route"
                       required
                       className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                    >
-                      <option value="">Select</option>
-                      <option value="STUDENT">Student</option>
-                      <option value="STAFF">Staff</option>
-                      <option value="CONDUCTOR">Conductor</option>
-                      <option value="MANAGER">Manager</option>
-                      <option value="ADMIN">Admin</option>
-                    </select>
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      Route / Travel Info
+                    </label>
+                    <textarea
+                      name="routeInfo"
+                      value={form.routeInfo}
+                      onChange={handleModalChange}
+                      placeholder="e.g. City Center to Campus via Main Road"
+                      rows={2}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100 resize-none"
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">City</label>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      Departure Time
+                    </label>
                     <input
-                      name="routeCity"
-                      value={form.routeCity}
+                      type="datetime-local"
+                      name="departureTime"
+                      value={form.departureTime}
                       onChange={handleModalChange}
-                      placeholder="e.g. Mumbai"
                       required
                       className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">Stop</label>
-                    <input
-                      name="routeStop"
-                      value={form.routeStop}
-                      onChange={handleModalChange}
-                      placeholder="e.g. Fort"
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">Ticket Type</label>
-                    <select
-                      name="ticketType"
-                      value={form.ticketType}
-                      onChange={handleModalChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                    >
-                      <option value="DAILY">Daily</option>
-                      <option value="WEEKLY">Weekly</option>
-                      <option value="MONTHLY">Monthly</option>
-                    </select>
-                  </div>
-                  {/* Issued date is removed from form, assigned by backend */}
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">Price</label>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      Total Seats
+                    </label>
                     <input
                       type="number"
-                      name="price"
-                      value={form.price}
-                      min={0}
-                      step={1}
+                      name="totalSeats"
+                      value={form.totalSeats}
+                      min={1}
+                      max={500}
                       onChange={handleModalChange}
                       required
                       className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                      readOnly
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      Available Seats
+                    </label>
+                    <input
+                      type="number"
+                      name="availableSeats"
+                      value={form.availableSeats}
+                      min={0}
+                      max={form.totalSeats || 500}
+                      onChange={handleModalChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      Base Price (₹)
+                    </label>
+                    <input
+                      type="number"
+                      name="basePrice"
+                      value={form.basePrice}
+                      min={0}
+                      onChange={handleModalChange}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
                     />
                   </div>
                 </div>
+
+                {/* Preview of user-type prices (calculated client-side for admin visibility only) */}
+                <div className="mt-2 p-3 bg-red-50 rounded-xl border border-red-100 text-xs text-gray-700">
+                  <p className="font-semibold mb-1 text-red-700">User Type Prices (preview)</p>
+                  {(() => {
+                    const { studentPrice, staffPrice, regularPrice } =
+                      deriveUserPricesFromBase(form.basePrice);
+                    return (
+                      <div className="flex flex-wrap gap-4">
+                        <span>
+                          <span className="font-semibold text-green-700">Student:</span> ₹
+                          {studentPrice}
+                        </span>
+                        <span>
+                          <span className="font-semibold text-amber-700">Staff:</span> ₹
+                          {staffPrice}
+                        </span>
+                        <span>
+                          <span className="font-semibold text-gray-800">Regular:</span> ₹
+                          {regularPrice}
+                        </span>
+                      </div>
+                    );
+                  })()}
+                  <p className="mt-1 text-[11px] text-gray-500">
+                    Final prices are calculated and stored securely on the server based on this base
+                    price.
+                  </p>
+                </div>
+
                 <div className="flex gap-3 justify-end mt-4">
                   <button
                     type="button"
@@ -483,7 +562,7 @@ export default function ManageTickets() {
                     type="submit"
                     className="bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-xl px-6 py-2 shadow hover:from-red-600 hover:to-pink-600 transition-all duration-200 font-semibold text-sm"
                   >
-                    {modalMode === 'add' ? 'Add Ticket' : 'Save Changes'}
+                    {modalMode === 'add' ? 'Add Session' : 'Save Changes'}
                   </button>
                 </div>
               </form>

@@ -1,6 +1,7 @@
 import express from 'express';
 import prisma from '../../lib/prisma.js';
 import { validateSession } from '../../lib/auth.js';
+import { getOrCreatePricingRule } from '../../models/PricingRule.js';
 
 const router = express.Router();
 
@@ -80,11 +81,21 @@ router.post('/', async (req, res) => {
       },
     });
 
-    // Create payment record
+    // Determine dynamic price based on user type
+    const pricingRule = await getOrCreatePricingRule(ticketType);
+    const userType = user.assignedRole?.name || user.loginType || 'REGULAR';
+    let amount = pricingRule.regularPrice;
+    if (userType === 'STUDENT') {
+      amount = pricingRule.studentPrice;
+    } else if (userType === 'STAFF') {
+      amount = pricingRule.staffPrice;
+    }
+
+    // Create payment record with server-calculated amount
     const payment = await prisma.payment.create({
       data: {
         userId: user.id,
-        amount: 50, // Default ticket price, can be configured
+        amount,
         status: 'PENDING',
         method: 'ONLINE',
       },

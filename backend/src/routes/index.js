@@ -116,9 +116,16 @@ router.use("/payments", upiQrRoute);
 import usersRoute from "./users/list-users.js";
 router.use("/users", usersRoute);
 
+// Admin: ticket session management (stored in MongoDB via Mongoose)
+import adminTicketSessionsRoute from "./admin/ticket-sessions.js";
+router.use("/admin/ticket-sessions", adminTicketSessionsRoute);
+
 // Reports/Dashboard stats routes
 import reportsRoute from "./reports/dashboard-stats.js";
 router.use("/reports", reportsRoute);
+// Verification reports
+import verificationRoute from "./reports/verification.js";
+router.use("/reports/verification", verificationRoute);
 
 // Profile management routes
 import profileRoute from "./profile/update-profile.js";
