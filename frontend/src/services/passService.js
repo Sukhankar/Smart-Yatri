@@ -44,4 +44,34 @@ export const passService = {
     if (!data.success) throw new Error(data.error);
     return data;
   },
+
+  async uploadPaymentProof(passId, fileOrUrl, reference = null) {
+    let body;
+    let headers = {};
+    
+    // Check if it's a File object (for file upload)
+    if (fileOrUrl instanceof File) {
+      const formData = new FormData();
+      formData.append('paymentProof', fileOrUrl);
+      if (reference) {
+        formData.append('reference', reference);
+      }
+      body = formData;
+      // Don't set Content-Type header - browser will set it with boundary
+    } else {
+      // Fallback to JSON for base64 or URL (backward compatibility)
+      headers['Content-Type'] = 'application/json';
+      body = JSON.stringify({ proofUrl: fileOrUrl, reference });
+    }
+
+    const res = await fetch(`${SERVER_URL}/api/passes/${passId}/payment-proof`, {
+      method: 'PATCH',
+      headers,
+      credentials: 'include',
+      body,
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    return data;
+  },
 };

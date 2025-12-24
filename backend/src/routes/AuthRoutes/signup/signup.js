@@ -1,6 +1,7 @@
 import express from 'express';
 import prisma from '../../../lib/prisma.js';
 import bcrypt from 'bcryptjs';
+import { generateQRId } from '../../../utils/generateQR.js';
 
 const router = express.Router();
 
@@ -98,12 +99,15 @@ router.post('/', async (req, res) => {
           error: 'Full name is required in profile.'
         });
       }
+      // Generate unique QR ID for new user
+      const qrId = generateQRId();
       createProfileData = {
         fullName: profile.fullName,
         schoolName: profile.schoolName ?? null,
         roleType: profile.roleType ?? loginType, // fallback to loginType as roleType
         idNumber: profile.idNumber ?? null,
         classOrPosition: profile.classOrPosition ?? null,
+        qrId: qrId, // Auto-generate QR code on registration
       };
     }
 

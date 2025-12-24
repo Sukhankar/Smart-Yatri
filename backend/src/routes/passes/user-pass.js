@@ -14,6 +14,12 @@ router.get('/', async (req, res) => {
 
     const pass = await prisma.pass.findFirst({
       where: { userId: user.id },
+      include: {
+        payments: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -34,6 +40,8 @@ router.get('/', async (req, res) => {
       pass.status = 'EXPIRED';
     }
 
+    const payment = pass.payments[0] || null;
+
     return res.json({
       success: true,
       pass: {
@@ -45,6 +53,16 @@ router.get('/', async (req, res) => {
         endDate: pass.endDate,
         createdAt: pass.createdAt,
       },
+      payment: payment
+        ? {
+            id: payment.id,
+            amount: payment.amount,
+            status: payment.status,
+            method: payment.method,
+            reference: payment.reference,
+            proofUrl: payment.proofUrl,
+          }
+        : null,
     });
   } catch (err) {
     console.error('Error getting user pass:', err);

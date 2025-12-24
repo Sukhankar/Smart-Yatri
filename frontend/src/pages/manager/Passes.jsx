@@ -8,7 +8,7 @@ function formatDate(dateStr) {
   return d.toLocaleDateString();
 }
 
-// Pass type and status options (for UI)
+// Pass type and status options
 const PASS_TYPE_OPTIONS = [
   { value: "", label: "All Types" },
   { value: "STUDENT", label: "Student Pass" },
@@ -69,7 +69,6 @@ export default function Passes() {
 
   // Only slightly modify: Filtering is now primarily on server as per status filter
   const filtered = useMemo(() => {
-    // Do not filter by status in client; that's handled via server query param
     let filteredData = passes;
     if (query && query.trim().length > 0) {
       const q = query.trim().toLowerCase();
@@ -92,26 +91,32 @@ export default function Passes() {
   }, [passes, query]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50 flex">
       <Sidebar role="manager" />
-      <div className="flex-1 p-4 md:p-6 lg:p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          All Passes
-        </h1>
-        {/* Filters and search */}
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 mb-6">
+      <div className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-700 to-cyan-600 bg-clip-text text-transparent mb-2">
+            Pass Management
+          </h1>
+          <p className="text-gray-600">
+            Review, search and manage issued passes for all users.
+          </p>
+        </div>
+
+        {/* Filters and Search */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
           <input
             type="text"
             placeholder="Search Name, Pass Code or ID…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-200 focus:outline-none"
-            style={{ minWidth: "200px" }}
+            className="border border-gray-300 rounded-xl px-4 py-2 focus:ring focus:ring-blue-200 focus:outline-none transition shadow-sm w-full"
           />
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-200 focus:outline-none"
+            className="border border-gray-300 rounded-xl px-4 py-2 focus:ring focus:ring-blue-200 focus:outline-none transition shadow-sm w-full"
           >
             {PASS_TYPE_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -122,7 +127,7 @@ export default function Passes() {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-200 focus:outline-none"
+            className="border border-gray-300 rounded-xl px-4 py-2 focus:ring focus:ring-blue-200 focus:outline-none transition shadow-sm w-full"
           >
             {PASS_STATUS_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -131,7 +136,7 @@ export default function Passes() {
             ))}
           </select>
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded focus:outline-none hover:bg-blue-600"
+            className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-5 py-2 rounded-xl focus:outline-none hover:from-blue-700 hover:to-cyan-700 transition-all duration-200 shadow-lg font-semibold w-full"
             onClick={loadPasses}
             disabled={loading}
           >
@@ -139,52 +144,61 @@ export default function Passes() {
           </button>
         </div>
 
+        {/* Table or message */}
         {loading ? (
-          <div className="flex items-center justify-center py-16">
+          <div className="flex items-center justify-center py-24">
             <div>
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
               <p className="mt-4 text-gray-600 text-center">Loading passes…</p>
             </div>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <p className="text-gray-500 text-lg">No passes found</p>
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-12 text-center m-auto max-w-md">
+            <div className="mb-4">
+              <svg className="w-16 h-16 text-gray-300 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+              </svg>
+            </div>
+            <p className="text-gray-500 text-lg mb-2">No passes found</p>
+            <p className="text-gray-400">Try adjusting your filters or search keyword.</p>
           </div>
         ) : (
-          <div className="overflow-auto">
-            <table className="min-w-full bg-white rounded-lg shadow">
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white/80 rounded-2xl shadow-xl border border-gray-200/50">
               <thead>
-                <tr className="bg-gray-100 border-b">
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-800">Pass Code</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-800">User Name</th>
-                  {/* Removed ID Number column */}
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-800">Type</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-800">Status</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-800">Start</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-800">End</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-800">Applied At</th>
+                <tr className="bg-gradient-to-r from-gray-50 to-blue-50 border-b">
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Pass Code</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">User Name</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Type</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Start</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">End</th>
+                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide">Applied At</th>
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((p) => (
-                  <tr key={p.id} className="border-b hover:bg-blue-50 transition">
-                    <td className="px-4 py-2 font-mono text-blue-800">{p.passCode}</td>
+                {filtered.map((p, idx) => (
+                  <tr
+                    key={p.id}
+                    className={`border-b transition-all ${idx % 2 === 0 ? "bg-white/75" : "bg-blue-50/30"} hover:bg-cyan-50`}
+                  >
+                    <td className="px-4 py-2 font-mono text-blue-800 break-all">{p.passCode}</td>
                     <td className="px-4 py-2">
                       {p.userName ||
                         p.user?.profile?.fullName ||
                         p.user?.username ||
                         ""}
                     </td>
-                    {/* Removed ID Number cell */}
                     <td className="px-4 py-2">{p.type}</td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-2 align-middle">
                       <span
                         className={
-                          "inline-block px-2 py-1 rounded text-xs font-bold " +
+                          "inline-block px-4 py-1 rounded-full text-xs font-semibold shadow-sm " +
                           (p.status === "ACTIVE"
-                            ? "bg-green-100 text-green-700"
+                            ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white"
                             : p.status === "PENDING"
-                            ? "bg-yellow-100 text-yellow-700"
+                            ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-white"
                             : p.status === "INACTIVE"
                             ? "bg-gray-200 text-gray-700"
                             : p.status === "DISABLED"
@@ -199,9 +213,7 @@ export default function Passes() {
                     </td>
                     <td className="px-4 py-2">{formatDate(p.startDate)}</td>
                     <td className="px-4 py-2">{formatDate(p.endDate)}</td>
-                    <td className="px-4 py-2">
-                      {formatDate(p.createdAt)}
-                    </td>
+                    <td className="px-4 py-2">{formatDate(p.createdAt)}</td>
                   </tr>
                 ))}
               </tbody>

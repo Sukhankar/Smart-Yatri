@@ -69,7 +69,7 @@ export async function seedRoleData() {
     { name: "ADMIN", description: "System Administrator", isDefault: false, type: "admin" },
     { name: "STAFF", description: "School or Bus Staff", isDefault: false, type: "staff" },
     { name: "STUDENT", description: "Student User", isDefault: true, type: "student" },
-    { name: "OFFICER", description: "Officer/Checker", isDefault: false, type: "officer" },
+    { name: "MANAGER", description: "MANAGER/Checker", isDefault: false, type: "MANAGER" },
     { name: "CONDUCTOR", description: "Conductor", isDefault: false, type: "conductor" },
   ];
 
@@ -87,7 +87,7 @@ export async function seedRoleData() {
     ADMIN: ['PERM_MANAGE_USERS', 'PERM_VIEW_REPORTS', 'PERM_MANAGE_PASSES', 'PERM_BOOK_PASS'],
     STAFF: ['PERM_VIEW_REPORTS', 'PERM_MANAGE_PASSES'],
     STUDENT: ['PERM_BOOK_PASS'],
-    OFFICER: [],
+    MANAGER: [],
     CONDUCTOR: [],
   };
 

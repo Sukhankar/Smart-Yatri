@@ -104,18 +104,18 @@ export default function LoginPage() {
 
       // Role-based navigation
       const user = data.user ?? data;
-      const roleName = user.role?.name || user.loginType || "";
+      const roleName = (user.role?.name || user.loginType || "").toUpperCase();
 
-      // Route based on role
-      if (roleName === "STUDENT" || user.loginType === "STUDENT") {
+      // Route based on role (case-insensitive matching)
+      if (roleName === "STUDENT") {
         navigate("/student/dashboard", { replace: true });
-      } else if (roleName === "CONDUCTOR" || user.loginType === "CONDUCTOR") {
+      } else if (roleName === "CONDUCTOR") {
         navigate("/conductor/scanner", { replace: true });
-      } else if (roleName === "MANAGER" || user.loginType === "MANAGER") {
+      } else if (roleName === "MANAGER") {
         navigate("/manager/dashboard", { replace: true });
-      } else if (roleName === "ADMIN" || user.loginType === "ADMIN") {
+      } else if (roleName === "ADMIN") {
         navigate("/admin/dashboard", { replace: true });
-      } else if (roleName === "STAFF" || user.loginType === "STAFF") {
+      } else if (roleName === "STAFF" || roleName === "FACULTY") {
         navigate("/faculty/dashboard", { replace: true });
       } else {
         navigate("/", { replace: true });

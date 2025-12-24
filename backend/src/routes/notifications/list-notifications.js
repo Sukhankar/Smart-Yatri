@@ -6,10 +6,10 @@ const router = express.Router();
 
 /**
  * Get user notifications
- * GET /api/notifications/list
+ * GET /api/notifications/list or GET /api/notifications
  * Query: ?role=broadcastRole (optional, for managers)
  */
-router.get('/', async (req, res) => {
+const listNotificationsHandler = async (req, res) => {
   try {
     const { user } = await validateSession(req);
     const { role } = req.query;
@@ -55,7 +55,10 @@ router.get('/', async (req, res) => {
       error: err.message || 'Failed to list notifications',
     });
   }
-});
+};
+
+router.get('/', listNotificationsHandler);
+router.get('/list', listNotificationsHandler);
 
 /**
  * Mark notification as read

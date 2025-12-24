@@ -6,7 +6,7 @@ import crypto from 'crypto';
 const router = express.Router();
 
 /**
- * Create pass request (monthly/yearly)
+ * Create pass request (monthly/yearly) - Step 1: Initialize pass and payment
  * POST /api/passes/create
  * Body: { type: 'MONTHLY' | 'YEARLY' }
  */
@@ -73,17 +73,9 @@ router.post('/', async (req, res) => {
         passId: pass.id,
         amount,
         status: 'PENDING',
-        method: 'ONLINE',
-      },
-    });
-
-    // Create notification
-    await prisma.notification.create({
-      data: {
-        userId: user.id,
-        title: 'Pass Request Created',
-        message: `Your ${type.toLowerCase()} pass request has been created and is pending approval.`,
-        type: 'INFO',
+        method: 'UPI', // Default to UPI/QR payment
+        reference: null,
+        proofUrl: null, // User will upload proof
       },
     });
 

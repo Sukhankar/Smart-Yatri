@@ -105,6 +105,9 @@ router.post('/', async (req, res) => {
         fullName: profile.fullName,
         idNumber: profile.idNumber,
         roleType: profile.roleType,
+        photo: profile.photo,
+        schoolName: profile.schoolName,
+        classOrPosition: profile.classOrPosition,
       },
       pass: activePass
         ? {

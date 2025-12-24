@@ -5,15 +5,19 @@ import { validateSession } from '../../lib/auth.js';
 const router = express.Router();
 
 /**
- * Get user travel history
- * GET /api/travel-history/list
+ * Get user travel history (only validated entries, most recent first, max 100 rows)
+ * GET /api/travel-history/list or GET /api/travel-history
  */
-router.get('/', async (req, res) => {
+const listHistoryHandler = async (req, res) => {
   try {
     const { user } = await validateSession(req);
 
+    // Only include validated (i.e., validatedAt is NOT NULL) travel history
     const history = await prisma.travelHistory.findMany({
-      where: { userId: user.id },
+      where: { 
+        userId: user.id,
+        validatedAt: { not: null },
+      },
       include: {
         route: true,
       },
@@ -23,13 +27,14 @@ router.get('/', async (req, res) => {
 
     return res.json({
       success: true,
-      history: history.map((entry) => ({
+      history: history.map(entry => ({
         id: entry.id,
         routeId: entry.routeId,
         routeName: entry.route?.name,
         travelDate: entry.travelDate,
         ticketType: entry.ticketType,
         validatedAt: entry.validatedAt,
+        createdAt: entry.createdAt,
       })),
     });
   } catch (err) {
@@ -39,6 +44,9 @@ router.get('/', async (req, res) => {
       error: err.message || 'Failed to list travel history',
     });
   }
-});
+};
+
+router.get('/', listHistoryHandler);
+router.get('/list', listHistoryHandler);
 
 export default router;
