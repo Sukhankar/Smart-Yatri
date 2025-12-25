@@ -1,4 +1,5 @@
 import express from 'express';
+import logger from '../../utils/logger.js';
 import { validateSession } from '../../lib/auth.js';
 import { getTicketSessionModel } from '../../models/TicketSession.js';
 import { getOrCreatePricingRule } from '../../models/PricingRule.js';
@@ -45,7 +46,7 @@ function parseDate(value, field) {
 /**
  * List ticket sessions with optional filters
  * GET /api/admin/ticket-sessions
- * Query: status, fromDate, toDate, routeSearch
+ * Query: status, fromDate, toDate, routeSearch, page, limit
  */
 router.get('/', async (req, res) => {
   try {
@@ -53,7 +54,7 @@ router.get('/', async (req, res) => {
     ensureAdmin(user);
 
     const TicketSession = await getTicketSessionModel();
-    const { status, fromDate, toDate, routeSearch } = req.query;
+    const { status, fromDate, toDate, routeSearch, page = 1, limit = 50 } = req.query;
 
     const query = {};
     if (status && ['ACTIVE', 'INACTIVE'].includes(status)) {
@@ -72,16 +73,30 @@ router.get('/', async (req, res) => {
       query.routeInfo = { $regex: routeSearch, $options: 'i' };
     }
 
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 50;
+    const skip = (pageNum - 1) * limitNum;
+
     const sessions = await TicketSession.find(query)
       .sort({ departureTime: 1 })
+      .limit(limitNum)
+      .skip(skip)
       .lean();
+
+    const total = await TicketSession.countDocuments(query);
 
     return res.json({
       success: true,
       sessions,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total,
+        pages: Math.ceil(total / limitNum),
+      },
     });
   } catch (err) {
-    console.error('Error listing ticket sessions:', err);
+    logger.error('Error listing ticket sessions:', err);
     return res.status(err.status || 500).json({
       success: false,
       error: err.message || 'Failed to list ticket sessions',
@@ -144,7 +159,7 @@ router.post('/', async (req, res) => {
       session: created.toObject(),
     });
   } catch (err) {
-    console.error('Error creating ticket session:', err);
+    logger.error('Error creating ticket session:', err);
     return res.status(err.status || 500).json({
       success: false,
       error: err.message || 'Failed to create ticket session',
@@ -230,7 +245,7 @@ router.put('/:id', async (req, res) => {
       session: updated.toObject(),
     });
   } catch (err) {
-    console.error('Error updating ticket session:', err);
+    logger.error('Error updating ticket session:', err);
     return res.status(err.status || 500).json({
       success: false,
       error: err.message || 'Failed to update ticket session',
@@ -265,7 +280,7 @@ router.delete('/:id', async (req, res) => {
       message: 'Ticket session deleted',
     });
   } catch (err) {
-    console.error('Error deleting ticket session:', err);
+    logger.error('Error deleting ticket session:', err);
     return res.status(err.status || 500).json({
       success: false,
       error: err.message || 'Failed to delete ticket session',
@@ -312,7 +327,7 @@ router.patch('/:id/status', async (req, res) => {
       session: updated.toObject(),
     });
   } catch (err) {
-    console.error('Error updating ticket session status:', err);
+    logger.error('Error updating ticket session status:', err);
     return res.status(err.status || 500).json({
       success: false,
       error: err.message || 'Failed to update ticket session status',

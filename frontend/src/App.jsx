@@ -35,6 +35,7 @@ import AuditLogs from "./pages/admin/AuditLogs";
 import SystemConfig from "./pages/admin/SystemConfig";
 import ManageTickets from "./pages/admin/ManageTickets";
 import AdminVerification from "./pages/admin/Verification";
+import PricingRules from "./pages/admin/PricingRules";
 
 // Faculty pages
 import FacultyDashboard from "./pages/faculty/Dashboard";
@@ -84,6 +85,7 @@ function App() {
         <Route path="/admin/config" element={<SystemConfig />} />
         <Route path="/admin/tickets" element={<ManageTickets />} />
         <Route path="/admin/verification" element={<AdminVerification />} />
+        <Route path="/admin/pricing-rules" element={<PricingRules />} />
         
         {/* Faculty routes */}
         <Route path="/faculty/dashboard" element={<FacultyDashboard />} />

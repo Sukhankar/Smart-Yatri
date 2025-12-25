@@ -1,4 +1,5 @@
 import express from "express";
+import rateLimit from "express-rate-limit";
 import signupRoute from "./AuthRoutes/signup/signup.js";
 import loginRoute from "./AuthRoutes/login/login.js";
 import sessionRoute from "./AuthRoutes/session/session.js";
@@ -112,13 +113,26 @@ import upiQrRoute from "./payments/upi-qr.js";
 router.use("/payments", paymentsRoute);
 router.use("/payments", upiQrRoute);
 
+// Admin rate limiter
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    success: false,
+    error: 'Too many requests from this IP, please try again later.',
+  },
+});
+
 // User management routes
 import usersRoute from "./users/list-users.js";
 router.use("/users", usersRoute);
 
 // Admin: ticket session management (stored in MongoDB via Mongoose)
 import adminTicketSessionsRoute from "./admin/ticket-sessions.js";
+import adminPricingRulesRoute from "./admin/pricing-rules.js";
+router.use("/admin", adminLimiter); // Apply to all /admin routes
 router.use("/admin/ticket-sessions", adminTicketSessionsRoute);
+router.use("/admin/pricing-rules", adminPricingRulesRoute);
 
 // Reports/Dashboard stats routes
 import reportsRoute from "./reports/dashboard-stats.js";

@@ -66,6 +66,8 @@ const TicketSessionSchema = new mongoose.Schema(
 );
 
 TicketSessionSchema.index({ departureTime: 1, status: 1 });
+TicketSessionSchema.index({ routeInfo: 1, status: 1 });
+TicketSessionSchema.index({ status: 1, departureTime: -1 });
 
 /**
  * Helper to get a compiled model with an ensured Mongo connection.

@@ -283,6 +283,7 @@ export default function Sidebar({ role = "student" }) {
       { path: "/admin/dashboard", label: "Dashboard", icon: icons.dashboard },
       { path: "/admin/approve-passes", label: "Approve Passes", icon: icons.approvePasses },
       { path: "/admin/tickets", label: "Ticket Sessions", icon: icons.tickets },
+      { path: "/admin/pricing-rules", label: "Pricing Rules", icon: icons.config },
       { path: "/admin/verification", label: "Verification", icon: icons.verifyPayment },
       { path: "/admin/routes", label: "Manage Routes", icon: icons.manageRoutes },
       { path: "/admin/buses", label: "Manage Buses", icon: icons.buses },

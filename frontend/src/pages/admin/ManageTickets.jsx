@@ -34,6 +34,7 @@ export default function ManageTickets() {
   const [editingSession, setEditingSession] = useState(null);
   const [modalMode, setModalMode] = useState('add'); // 'add' or 'edit'
   const [form, setForm] = useState(emptySession);
+  const [selectedSessions, setSelectedSessions] = useState([]);
 
   useEffect(() => {
     loadSessions();
@@ -46,6 +47,7 @@ export default function ManageTickets() {
     try {
       const res = await adminTicketService.listSessions(filters);
       setSessions(res.sessions || []);
+      setSelectedSessions([]);
     } catch (err) {
       setError(err.message || 'Failed to fetch ticket sessions');
     } finally {
@@ -94,6 +96,55 @@ export default function ManageTickets() {
       setLoading(true);
       const nextStatus = session.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
       await adminTicketService.updateStatus(session._id, nextStatus);
+      await loadSessions();
+    } catch (err) {
+      setError(err.message || 'Failed to update status');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSelectAll = (checked) => {
+    if (checked) {
+      setSelectedSessions(sessions.map(s => s._id));
+    } else {
+      setSelectedSessions([]);
+    }
+  };
+
+  const handleSelectSession = (id, checked) => {
+    if (checked) {
+      setSelectedSessions(prev => [...prev, id]);
+    } else {
+      setSelectedSessions(prev => prev.filter(sid => sid !== id));
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedSessions.length === 0) return;
+    if (!window.confirm(`Delete ${selectedSessions.length} selected sessions?`)) return;
+    try {
+      setLoading(true);
+      for (const id of selectedSessions) {
+        await adminTicketService.deleteSession(id);
+      }
+      setSelectedSessions([]);
+      await loadSessions();
+    } catch (err) {
+      setError(err.message || 'Failed to delete sessions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBulkStatusUpdate = async (newStatus) => {
+    if (selectedSessions.length === 0) return;
+    try {
+      setLoading(true);
+      for (const id of selectedSessions) {
+        await adminTicketService.updateStatus(id, newStatus);
+      }
+      setSelectedSessions([]);
       await loadSessions();
     } catch (err) {
       setError(err.message || 'Failed to update status');
@@ -152,13 +203,40 @@ export default function ManageTickets() {
               Configure routes, timings, seats and dynamic pricing for different user types.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={handleAddClick}
-            className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold rounded-xl px-6 py-3 shadow hover:from-red-600 hover:to-pink-600 transition-all duration-200 mt-4 sm:mt-0"
-          >
-            + Add Session
-          </button>
+          <div className="flex gap-2 mt-4 sm:mt-0">
+            {selectedSessions.length > 0 && (
+              <>
+                <button
+                  onClick={handleBulkDelete}
+                  disabled={loading}
+                  className="bg-red-500 text-white font-semibold rounded-xl px-4 py-3 shadow hover:bg-red-600 transition-all duration-200 disabled:opacity-50"
+                >
+                  Delete Selected ({selectedSessions.length})
+                </button>
+                <button
+                  onClick={() => handleBulkStatusUpdate('ACTIVE')}
+                  disabled={loading}
+                  className="bg-green-500 text-white font-semibold rounded-xl px-4 py-3 shadow hover:bg-green-600 transition-all duration-200 disabled:opacity-50"
+                >
+                  Activate Selected
+                </button>
+                <button
+                  onClick={() => handleBulkStatusUpdate('INACTIVE')}
+                  disabled={loading}
+                  className="bg-gray-500 text-white font-semibold rounded-xl px-4 py-3 shadow hover:bg-gray-600 transition-all duration-200 disabled:opacity-50"
+                >
+                  Deactivate Selected
+                </button>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={handleAddClick}
+              className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold rounded-xl px-6 py-3 shadow hover:from-red-600 hover:to-pink-600 transition-all duration-200"
+            >
+              + Add Session
+            </button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -214,6 +292,14 @@ export default function ManageTickets() {
               <thead className="bg-white">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    <input
+                      type="checkbox"
+                      checked={selectedSessions.length === sessions.length && sessions.length > 0}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                    />
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Title
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -239,19 +325,19 @@ export default function ManageTickets() {
               <tbody className="bg-white divide-y divide-gray-100">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-10 text-center text-gray-400 text-lg">
+                    <td colSpan={8} className="px-6 py-10 text-center text-gray-400 text-lg">
                       Loading...
                     </td>
                   </tr>
                 ) : error ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-10 text-center text-red-500">
+                    <td colSpan={8} className="px-6 py-10 text-center text-red-500">
                       {error}
                     </td>
                   </tr>
                 ) : sessions.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-10 text-center text-gray-400 text-lg">
+                    <td colSpan={8} className="px-6 py-10 text-center text-gray-400 text-lg">
                       No ticket sessions found.
                     </td>
                   </tr>
@@ -260,6 +346,14 @@ export default function ManageTickets() {
                     const { studentPrice, staffPrice, regularPrice } = session;
                     return (
                       <tr key={session._id} className="hover:bg-red-50/30 transition">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            checked={selectedSessions.includes(session._id)}
+                            onChange={(e) => handleSelectSession(session._id, e.target.checked)}
+                            className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                          />
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap font-semibold text-gray-800">
                           {session.title}
                         </td>
