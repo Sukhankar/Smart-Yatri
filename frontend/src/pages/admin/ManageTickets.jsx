@@ -2,15 +2,25 @@ import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import { adminTicketService } from '../../services/adminTicketService';
 
-// Default discounts – must stay in sync with backend defaults in PricingRule
+// Centralized user type pricing rules, must match backend logic!
+const USER_PRICING_RULES = {
+  STUDENT: 0.7,
+  STAFF: 0.85,
+  REGULAR: 1,
+};
+
+// Derives prices for user types based on a base price
 function deriveUserPricesFromBase(basePrice) {
   const base = Number(basePrice) || 0;
-  const studentPrice = Math.round(base * 0.7);
-  const staffPrice = Math.round(base * 0.85);
-  const regularPrice = base;
-  return { studentPrice, staffPrice, regularPrice };
+  const prices = {
+    studentPrice: Math.round(base * USER_PRICING_RULES.STUDENT),
+    staffPrice: Math.round(base * USER_PRICING_RULES.STAFF),
+    regularPrice: base
+  };
+  return prices;
 }
 
+// Corresponds to fields as per TicketSession model/schema
 const emptySession = {
   title: '',
   routeInfo: '',
@@ -46,7 +56,18 @@ export default function ManageTickets() {
     setError('');
     try {
       const res = await adminTicketService.listSessions(filters);
-      setSessions(res.sessions || []);
+      if (!res.sessions) {
+        setSessions([]);
+        setSelectedSessions([]);
+        return;
+      }
+      // Compute prices for each session and attach to object (in-memory, for quick admin display)
+      const withUserTypePrices = res.sessions.map(session => {
+        // compute and attach prices for display as per our pricing rules
+        const { studentPrice, staffPrice, regularPrice } = deriveUserPricesFromBase(session.basePrice);
+        return { ...session, studentPrice, staffPrice, regularPrice };
+      });
+      setSessions(withUserTypePrices);
       setSelectedSessions([]);
     } catch (err) {
       setError(err.message || 'Failed to fetch ticket sessions');

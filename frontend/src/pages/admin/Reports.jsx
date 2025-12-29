@@ -166,7 +166,6 @@ export default function Reports() {
                           <Bar dataKey="revenue" radius={[6, 6, 0, 0]}>
                             {analytics.monthlyRevenue.map((entry, index) => (
                               <Cell
-                                // eslint-disable-next-line react/no-array-index-key
                                 key={`rev-${index}`}
                                 fill={REVENUE_COLORS[index % REVENUE_COLORS.length]}
                               />
@@ -199,7 +198,6 @@ export default function Reports() {
                           >
                             {analytics.ticketVsPassUsage.map((entry, index) => (
                               <Cell
-                                // eslint-disable-next-line react/no-array-index-key
                                 key={`tvp-${index}`}
                                 fill={PIE_COLORS[index % PIE_COLORS.length]}
                               />

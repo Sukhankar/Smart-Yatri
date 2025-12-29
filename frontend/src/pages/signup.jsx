@@ -499,15 +499,22 @@ export default function SignupPage() {
   useEffect(() => {
     async function fetchRoles() {
       try {
+        console.log('Fetching roles from:', `${SERVER_URL}/api/permissions/roles`);
         const res = await fetch(`${SERVER_URL}/api/permissions/roles`);
+        console.log('Response status:', res.status);
         const data = await res.json();
+        console.log('Response data:', data);
         let rolesRaw = data?.roles ?? (Array.isArray(data) ? data : []);
+        console.log('Roles raw:', rolesRaw);
         if (Array.isArray(rolesRaw)) {
           setRoles(rolesRaw);
+          console.log('Set roles:', rolesRaw);
         } else {
           setRoles([]);
+          console.log('Set empty roles');
         }
-      } catch {
+      } catch (error) {
+        console.error('Error fetching roles:', error);
         setRoles([]);
       }
     }
