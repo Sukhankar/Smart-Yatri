@@ -1,38 +1,6 @@
-import mongoose from 'mongoose';
-import { connectMongo } from '../lib/mongoose.js';
+import { PrismaClient } from '@prisma/client';
 
-const PricingRuleSchema = new mongoose.Schema(
-  {
-    ticketType: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 50,
-      unique: true,
-    },
-    basePrice: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    studentPrice: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    staffPrice: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    regularPrice: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-  },
-  { timestamps: true }
-);
+const prisma = new PrismaClient();
 
 /**
  * Returns or creates a PricingRule for a given ticketType using sensible defaults.
@@ -40,11 +8,9 @@ const PricingRuleSchema = new mongoose.Schema(
  * the backend logic simple.
  */
 export async function getOrCreatePricingRule(ticketType = 'DAILY') {
-  await connectMongo();
-  const PricingRule =
-    mongoose.models.PricingRule || mongoose.model('PricingRule', PricingRuleSchema);
-
-  let rule = await PricingRule.findOne({ ticketType }).lean();
+  let rule = await prisma.pricingRule.findUnique({
+    where: { ticketType },
+  });
   if (rule) return rule;
 
   const defaultBase = 50;
@@ -56,12 +22,14 @@ export async function getOrCreatePricingRule(ticketType = 'DAILY') {
     regularPrice: defaultBase,
   };
 
-  rule = await PricingRule.create({
-    ticketType,
-    ...defaults,
+  rule = await prisma.pricingRule.create({
+    data: {
+      ticketType,
+      ...defaults,
+    },
   });
 
-  return rule.toObject();
+  return rule;
 }
 
 

@@ -14,3 +14,472 @@
 {"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:76:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-24T08:26:54.092Z"}
 {"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-24T08:26:54.581Z"}
 {"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-24T08:26:54.761Z"}
+{"level":"info","message":"OPTIONS /api/auth/login","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:38.317Z"}
+{"level":"info","message":"POST /api/auth/login","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:38.336Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:39.087Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:39.130Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:39.137Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:39.148Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:39.218Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:39.234Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:39.242Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:39.361Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:46.009Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:46.013Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:46.033Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:46.038Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:47.196Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:47.201Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:48:47.224Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:47.233Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:47.238Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:48:47.249Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:49.106Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:49.108Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:48:49.119Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:49.127Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:49.131Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:48:49.143Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:50.994Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:50.998Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:51.027Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:51.050Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:52.079Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:52.101Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:48:52.115Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:52.123Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:48:52.134Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:52.139Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:52.882Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:52.886Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:48:52.895Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:52.901Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:52.907Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:48:52.916Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:53.630Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:53.635Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:48:53.644Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:53.648Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:53.657Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:48:53.670Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:54.419Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:54.422Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:48:54.441Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:54.447Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:54.451Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:48:54.460Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:55.462Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:55.468Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:48:55.478Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:55.484Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:48:55.487Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:48:55.497Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:49:25.483Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:49:55.491Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:50:25.518Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:50:41.827Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:50:41.833Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:50:41.875Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:50:41.930Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:50:41.952Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:50:42.029Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:51:12.858Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:51:42.490Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:52:12.495Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:52:29.700Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:52:29.720Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:52:29.957Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:52:30.060Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:52:30.102Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:52:30.257Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:52:59.678Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:53:29.708Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:53:59.691Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:54:29.701Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:55:00.481Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:55:30.493Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:56:25.198Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:57:02.145Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:57:05.026Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:57:05.037Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:57:05.054Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:57:05.060Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:57:05.066Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:57:05.075Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:57:35.032Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:58:05.031Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:58:35.060Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:05.178Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:29.190Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:29.315Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:59:29.351Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:29.517Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:29.567Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:59:29.980Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:30.009Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:59:30.217Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:30.251Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:30.336Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:59:31.051Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:31.132Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:31.257Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:31.272Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:59:31.306Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:31.322Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:31.331Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T06:59:31.370Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:33.295Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:33.304Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:59:33.321Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:33.332Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:33.335Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:59:33.348Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:35.962Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:35.976Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:35.979Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:35.984Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:36.071Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:36.085Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:36.100Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:36.134Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:37.078Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:37.080Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:37.101Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:37.159Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:38.148Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:38.153Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:59:38.176Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:38.192Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:38.202Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T06:59:38.212Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:39.571Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:39.576Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:39.615Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:39.634Z"}
+{"level":"info","message":"GET /api/reports/verification?type=tickets","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:42.889Z"}
+{"level":"info","message":"GET /api/reports/verification?type=passes","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:44.348Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:45.497Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:47.897Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:47.906Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:47.928Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:47.935Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:49.280Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:49.285Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:49.289Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:49.292Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:49.338Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:49.342Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:49.372Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:49.381Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:58.000Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:58.007Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:58.022Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T06:59:58.027Z"}
+{"level":"info","message":"OPTIONS /api/routes-management/1","service":"smart-yatri-backend","timestamp":"2025-12-25T07:00:00.162Z"}
+{"level":"info","message":"PATCH /api/routes-management/1","service":"smart-yatri-backend","timestamp":"2025-12-25T07:00:00.169Z"}
+{"level":"warn","message":"404: PATCH /api/routes-management/1 not found","service":"smart-yatri-backend","timestamp":"2025-12-25T07:00:00.171Z"}
+{"level":"info","message":"PATCH /api/routes-management/1","service":"smart-yatri-backend","timestamp":"2025-12-25T07:00:02.881Z"}
+{"level":"warn","message":"404: PATCH /api/routes-management/1 not found","service":"smart-yatri-backend","timestamp":"2025-12-25T07:00:02.884Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:00:28.487Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:00:58.492Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:01:29.777Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:01:58.495Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:20.900Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:20.903Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:20.942Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:20.950Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:25.572Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:25.576Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:25.578Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:25.581Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:27.629Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:27.632Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:27.635Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:27.639Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:40.553Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:40.559Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:40.562Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:40.609Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:40.645Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:46.501Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:46.507Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:46.529Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:46.579Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:46.595Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:46.598Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:52.605Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:52.608Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:52.637Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:52.641Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:53.726Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:53.735Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:53.758Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:53.766Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:55.759Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:55.764Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:55.810Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:02:55.815Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:00.946Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:00.951Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T07:03:00.974Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:01.004Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:01.012Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T07:03:01.025Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:02.813Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:02.818Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:02.834Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:02.838Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:03.816Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:03.819Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:03.821Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:03.824Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:03.849Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:03.860Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:03.881Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:03.909Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:04.669Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:04.673Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:04.718Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:04.731Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:05.226Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:05.229Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T07:03:05.238Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:05.245Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:05.250Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T07:03:05.265Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:05.945Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:05.948Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T07:03:05.956Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:05.962Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:05.965Z"}
+{"level":"error","message":"Error listing pricing rules: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getOrCreatePricingRule (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/PricingRule.js:43:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/pricing-rules.js:45:24","timestamp":"2025-12-25T07:03:05.980Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:07.761Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:07.767Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T07:03:07.782Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:07.788Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T07:03:07.797Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:07.805Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:03:38.480Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:04:08.487Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:04:38.893Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:05:08.483Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:05:38.510Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:06:08.491Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:07:24.524Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:08:09.532Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:08:38.488Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:08:38.492Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T07:08:38.526Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:08:38.529Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:08:38.548Z"}
+{"level":"error","message":"Error listing ticket sessions: MONGO_URL (or MONGODB_URI) is not configured in environment","service":"smart-yatri-backend","stack":"Error: MONGO_URL (or MONGODB_URI) is not configured in environment\n    at connectMongo (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/lib/mongoose.js:17:11)\n    at getTicketSessionModel (file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/models/TicketSession.js:85:9)\n    at file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:56:33","timestamp":"2025-12-25T07:08:38.561Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:09:08.511Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:09:39.491Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:10:09.484Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:10:39.486Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:11:08.523Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:11:38.508Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:12:08.509Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:12:38.498Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:13:09.493Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:13:40.006Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:14:58.229Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:03.152Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:03.164Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:03.263Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:03.279Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:33.030Z"}
+{"level":"info","message":"OPTIONS /api/admin/ticket-sessions","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:49.052Z"}
+{"level":"info","message":"POST /api/admin/ticket-sessions","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:49.058Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:49.205Z"}
+{"level":"info","message":"OPTIONS /api/admin/ticket-sessions/undefined/status","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:54.297Z"}
+{"level":"info","message":"PATCH /api/admin/ticket-sessions/undefined/status","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:54.302Z"}
+{"clientVersion":"6.19.0","level":"error","message":"Error updating ticket session status: \nInvalid `prisma.ticketSession.findUnique()` invocation:\n\n{\n  where: {\n+   id: Int\n  }\n}\n\nArgument `id` is missing.","name":"PrismaClientValidationError","service":"smart-yatri-backend","stack":"PrismaClientValidationError: \nInvalid `prisma.ticketSession.findUnique()` invocation:\n\n{\n  where: {\n+   id: Int\n  }\n}\n\nArgument `id` is missing.\n    at Nn (C:\\Users\\Lenovo\\Documents\\Freelance_Project\\BusTickit\\busTicket\\backend\\node_modules\\@prisma\\client\\runtime\\library.js:29:1363)\n    at ei.handleRequestError (C:\\Users\\Lenovo\\Documents\\Freelance_Project\\BusTickit\\busTicket\\backend\\node_modules\\@prisma\\client\\runtime\\library.js:121:6911)\n    at ei.handleAndLogRequestError (C:\\Users\\Lenovo\\Documents\\Freelance_Project\\BusTickit\\busTicket\\backend\\node_modules\\@prisma\\client\\runtime\\library.js:121:6593)\n    at ei.request (C:\\Users\\Lenovo\\Documents\\Freelance_Project\\BusTickit\\busTicket\\backend\\node_modules\\@prisma\\client\\runtime\\library.js:121:6300)\n    at async a (C:\\Users\\Lenovo\\Documents\\Freelance_Project\\BusTickit\\busTicket\\backend\\node_modules\\@prisma\\client\\runtime\\library.js:130:9551)\n    at async file:///C:/Users/Lenovo/Documents/Freelance_Project/BusTickit/busTicket/backend/src/routes/admin/ticket-sessions.js:319:22","timestamp":"2025-12-25T07:15:54.330Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:56.423Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:56.428Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:56.455Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:15:56.465Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:04.458Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:04.461Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:04.492Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:04.525Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:05.408Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:05.417Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:05.451Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:05.456Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:09.149Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:09.152Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:09.190Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:09.193Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:10.059Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:10.065Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:10.099Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:10.112Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:13.317Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:13.320Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:13.348Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:13.391Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:14.731Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:14.744Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:14.765Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:14.773Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:15.377Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:15.381Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:15.410Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:15.439Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:16.637Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:16.640Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:16.655Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:16.663Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:17.640Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:17.646Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:17.651Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:17.654Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:17.705Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:17.710Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:17.720Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:17.785Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:16:48.485Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:17:17.639Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:17:47.662Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:18:17.657Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:18:47.640Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:19:18.486Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:19:48.485Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:20:24.485Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:21:24.601Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:22:24.496Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:23:24.501Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:23:47.645Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:25:17.648Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:25:48.485Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:26:18.488Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:26:48.108Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:27:18.494Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:27:48.507Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:28:18.493Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:29:47.649Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:43:47.659Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:17.648Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:22.334Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:22.344Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:22.360Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:22.378Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:24.341Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:24.347Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:24.354Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:24.359Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:24.392Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:24.396Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:24.406Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:24.412Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:30.097Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:30.103Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:30.115Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:30.119Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:34.435Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:34.442Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:34.458Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:44:34.461Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:45:04.439Z"}
+{"level":"info","message":"GET /api/permissions/roles","service":"smart-yatri-backend","timestamp":"2025-12-25T07:53:04.160Z"}
+{"level":"info","message":"OPTIONS /api/auth/login","service":"smart-yatri-backend","timestamp":"2025-12-25T07:53:59.626Z"}
+{"level":"info","message":"POST /api/auth/login","service":"smart-yatri-backend","timestamp":"2025-12-25T07:53:59.636Z"}
+{"level":"info","message":"GET /api/permissions/roles","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:02.245Z"}
+{"level":"info","message":"GET /api/permissions/roles","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:02.265Z"}
+{"level":"info","message":"OPTIONS /api/auth/signup","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:44.598Z"}
+{"level":"info","message":"POST /api/auth/signup","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:44.603Z"}
+{"level":"info","message":"OPTIONS /api/auth/login","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.097Z"}
+{"level":"info","message":"POST /api/auth/login","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.107Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.488Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.499Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.504Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.514Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.561Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.587Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.600Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:54:54.691Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:01.512Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:01.515Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:01.538Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:01.554Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:02.207Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:02.211Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:02.226Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:02.229Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:03.016Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:03.019Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:03.023Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:03.027Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:03.057Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:03.061Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:03.065Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:03.099Z"}
+{"level":"info","message":"POST /api/auth/logout","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:08.697Z"}
+{"level":"info","message":"GET /api/permissions/roles","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:11.048Z"}
+{"level":"info","message":"GET /api/permissions/roles","service":"smart-yatri-backend","timestamp":"2025-12-25T07:55:11.065Z"}
+{"level":"info","message":"OPTIONS /api/auth/signup","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:00.056Z"}
+{"level":"info","message":"POST /api/auth/signup","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:00.060Z"}
+{"level":"info","message":"OPTIONS /api/auth/login","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.243Z"}
+{"level":"info","message":"POST /api/auth/login","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.257Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.615Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.636Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.642Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.645Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.671Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.687Z"}
+{"level":"info","message":"GET /api/passes/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.700Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:10.769Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:15.634Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:15.648Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:15.670Z"}
+{"level":"info","message":"GET /api/admin/ticket-sessions?status=ACTIVE","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:15.696Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:17.916Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:17.919Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:17.940Z"}
+{"level":"info","message":"GET /api/admin/pricing-rules","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:17.964Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:19.025Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:19.030Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:19.067Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:19.071Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:23.468Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:23.471Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:23.486Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:23.489Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:24.849Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:24.852Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:24.871Z"}
+{"level":"info","message":"GET /api/reports/verification?type=all","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:24.885Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:26.755Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:26.763Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:26.779Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:26.783Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:27.922Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:27.933Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:27.958Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:27.965Z"}
+{"level":"info","message":"GET /api/routes-management/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:28.076Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:28.087Z"}
+{"level":"info","message":"GET /api/users/list?loginType=CONDUCTOR","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:28.092Z"}
+{"level":"info","message":"GET /api/buses/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:28.098Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:33.868Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:33.871Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:33.894Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:33.899Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:35.323Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:35.326Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:35.348Z"}
+{"level":"info","message":"GET /api/reports/dashboard-stats","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:35.381Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:38.976Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:38.980Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:38.999Z"}
+{"level":"info","message":"GET /api/payments/pending","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:39.002Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:39.785Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:39.788Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:39.812Z"}
+{"level":"info","message":"GET /api/users/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:39.828Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:42.932Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:42.951Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:45.572Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:56:45.587Z"}
+{"level":"info","message":"GET /api/notifications/list","service":"smart-yatri-backend","timestamp":"2025-12-25T07:57:15.577Z"}

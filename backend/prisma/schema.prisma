@@ -383,3 +383,44 @@ model TravelHistory {
   @@index([routeId])
   @@index([travelDate])
 }
+
+//////////////////////////////
+// TICKET SESSION MANAGEMENT
+//////////////////////////////
+
+model TicketSession {
+  id            Int       @id @default(autoincrement())
+  title         String
+  routeInfo     String
+  departureTime DateTime
+  totalSeats    Int
+  availableSeats Int
+  basePrice     Float
+  studentPrice  Float
+  staffPrice    Float
+  regularPrice  Float
+  status        String    @default("ACTIVE") // ACTIVE, INACTIVE
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([routeInfo])
+  @@index([status])
+  @@index([departureTime])
+}
+
+//////////////////////////////
+// PRICING RULE MANAGEMENT
+//////////////////////////////
+
+model PricingRule {
+  id            Int       @id @default(autoincrement())
+  ticketType    String    @unique
+  basePrice     Float
+  studentPrice  Float
+  staffPrice    Float
+  regularPrice  Float
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}

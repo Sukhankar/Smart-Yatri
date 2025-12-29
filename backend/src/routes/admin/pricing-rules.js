@@ -1,6 +1,7 @@
 import express from 'express';
 import logger from '../../utils/logger.js';
 import { validateSession } from '../../lib/auth.js';
+import prisma from '../../lib/prisma.js';
 import { getOrCreatePricingRule } from '../../models/PricingRule.js';
 
 const router = express.Router();
@@ -75,16 +76,15 @@ router.put('/:ticketType', async (req, res) => {
     const regular = parseNumber(regularPrice, 'regularPrice', 0);
 
     // Update the rule in DB
-    const PricingRule = (await import('../../models/PricingRule.js')).default;
-    const updated = await PricingRule.findOneAndUpdate(
-      { ticketType },
-      { basePrice: base, studentPrice: student, staffPrice: staff, regularPrice: regular },
-      { new: true, upsert: true }
-    );
+    const updated = await prisma.pricingRule.upsert({
+      where: { ticketType },
+      update: { basePrice: base, studentPrice: student, staffPrice: staff, regularPrice: regular },
+      create: { ticketType, basePrice: base, studentPrice: student, staffPrice: staff, regularPrice: regular },
+    });
 
     return res.json({
       success: true,
-      rule: updated.toObject(),
+      rule: updated,
     });
   } catch (err) {
     logger.error('Error updating pricing rule:', err);

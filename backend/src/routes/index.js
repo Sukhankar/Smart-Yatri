@@ -26,8 +26,29 @@ import { PATCH as patchUserPermissions } from "./permissions/users/[id]/route.js
 // Directly include the relevant user handlers
 import { getUsers } from "./permissions/users/users.js";
 
+// General rate limiter for all routes
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 1000 requests per windowMs
+  message: {
+    success: false,
+    error: 'Too many requests from this IP, please try again later.',
+  },
+});
+
 const router = express.Router();
 
+router.use(generalLimiter);
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Welcome message
+ *     responses:
+ *       200:
+ *         description: Welcome message
+ */
 router.get("/", (req, res) => {
   res.json({ message: "Backend with Prisma & MySQL is running!" });
 });

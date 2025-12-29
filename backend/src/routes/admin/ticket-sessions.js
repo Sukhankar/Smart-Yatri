@@ -1,8 +1,8 @@
 import express from 'express';
 import logger from '../../utils/logger.js';
 import { validateSession } from '../../lib/auth.js';
-import { getTicketSessionModel } from '../../models/TicketSession.js';
-import { getOrCreatePricingRule } from '../../models/PricingRule.js';
+import prisma from '../../lib/prisma.js';
+import { getOrCreatePricingRule } from '../../models/PricingRule.js'; // Still use for price calculation
 
 const router = express.Router();
 
@@ -53,37 +53,38 @@ router.get('/', async (req, res) => {
     const { user } = await validateSession(req);
     ensureAdmin(user);
 
-    const TicketSession = await getTicketSessionModel();
     const { status, fromDate, toDate, routeSearch, page = 1, limit = 50 } = req.query;
 
-    const query = {};
+    const where = {};
     if (status && ['ACTIVE', 'INACTIVE'].includes(status)) {
-      query.status = status;
+      where.status = status;
     }
     if (fromDate || toDate) {
-      query.departureTime = {};
+      where.departureTime = {};
       if (fromDate) {
-        query.departureTime.$gte = new Date(fromDate);
+        where.departureTime.gte = new Date(fromDate);
       }
       if (toDate) {
-        query.departureTime.$lte = new Date(toDate);
+        where.departureTime.lte = new Date(toDate);
       }
     }
     if (routeSearch) {
-      query.routeInfo = { $regex: routeSearch, $options: 'i' };
+      where.routeInfo = { contains: routeSearch, mode: 'insensitive' };
     }
 
     const pageNum = parseInt(page) || 1;
     const limitNum = parseInt(limit) || 50;
     const skip = (pageNum - 1) * limitNum;
 
-    const sessions = await TicketSession.find(query)
-      .sort({ departureTime: 1 })
-      .limit(limitNum)
-      .skip(skip)
-      .lean();
-
-    const total = await TicketSession.countDocuments(query);
+    const [sessions, total] = await Promise.all([
+      prisma.ticketSession.findMany({
+        where,
+        orderBy: { departureTime: 'asc' },
+        take: limitNum,
+        skip,
+      }),
+      prisma.ticketSession.count({ where }),
+    ]);
 
     return res.json({
       success: true,
@@ -140,23 +141,24 @@ router.post('/', async (req, res) => {
       ? base / pricingRule.basePrice
       : 1;
 
-    const TicketSession = await getTicketSessionModel();
-    const created = await TicketSession.create({
-      title: title.trim(),
-      routeInfo: routeInfo.trim(),
-      departureTime: depTime,
-      totalSeats: total,
-      availableSeats: available,
-      basePrice: base,
-      studentPrice: Math.round(pricingRule.studentPrice * factor),
-      staffPrice: Math.round(pricingRule.staffPrice * factor),
-      regularPrice: Math.round(pricingRule.regularPrice * factor),
-      status: 'ACTIVE',
+    const created = await prisma.TicketSession.create({
+      data: {
+        title: title.trim(),
+        routeInfo: routeInfo.trim(),
+        departureTime: depTime,
+        totalSeats: total,
+        availableSeats: available,
+        basePrice: base,
+        studentPrice: Math.round(pricingRule.studentPrice * factor),
+        staffPrice: Math.round(pricingRule.staffPrice * factor),
+        regularPrice: Math.round(pricingRule.regularPrice * factor),
+        status: 'ACTIVE',
+      },
     });
 
     return res.status(201).json({
       success: true,
-      session: created.toObject(),
+      session: created,
     });
   } catch (err) {
     logger.error('Error creating ticket session:', err);
@@ -178,9 +180,9 @@ router.put('/:id', async (req, res) => {
     ensureAdmin(user);
 
     const { id } = req.params;
-    const TicketSession = await getTicketSessionModel();
-
-    const existing = await TicketSession.findById(id);
+    const existing = await prisma.ticketSession.findUnique({
+      where: { id: Number(id) },
+    });
     if (!existing) {
       return res.status(404).json({
         success: false,
@@ -236,13 +238,14 @@ router.put('/:id', async (req, res) => {
       updates.regularPrice = Math.round(pricingRule.regularPrice * factor);
     }
 
-    const updated = await TicketSession.findByIdAndUpdate(id, updates, {
-      new: true,
+    const updated = await prisma.ticketSession.update({
+      where: { id: Number(id) },
+      data: updates,
     });
 
     return res.json({
       success: true,
-      session: updated.toObject(),
+      session: updated,
     });
   } catch (err) {
     logger.error('Error updating ticket session:', err);
@@ -263,9 +266,11 @@ router.delete('/:id', async (req, res) => {
     ensureAdmin(user);
 
     const { id } = req.params;
-    const TicketSession = await getTicketSessionModel();
 
-    const existing = await TicketSession.findById(id);
+    // Ensure exists
+    const existing = await prisma.TicketSession.findUnique({
+      where: { id: Number(id) },
+    });
     if (!existing) {
       return res.status(404).json({
         success: false,
@@ -273,7 +278,9 @@ router.delete('/:id', async (req, res) => {
       });
     }
 
-    await TicketSession.deleteOne({ _id: id });
+    await prisma.ticketSession.delete({
+      where: { id: Number(id) },
+    });
 
     return res.json({
       success: true,
@@ -308,23 +315,25 @@ router.patch('/:id/status', async (req, res) => {
       });
     }
 
-    const TicketSession = await getTicketSessionModel();
-    const updated = await TicketSession.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true }
-    );
-
-    if (!updated) {
+    // Ensure exists
+    const existing = await prisma.ticketSession.findUnique({
+      where: { id: Number(id) },
+    });
+    if (!existing) {
       return res.status(404).json({
         success: false,
         error: 'Ticket session not found',
       });
     }
 
+    const updated = await prisma.ticketSession.update({
+      where: { id: Number(id) },
+      data: { status },
+    });
+
     return res.json({
       success: true,
-      session: updated.toObject(),
+      session: updated,
     });
   } catch (err) {
     logger.error('Error updating ticket session status:', err);
@@ -336,5 +345,4 @@ router.patch('/:id/status', async (req, res) => {
 });
 
 export default router;
-
 
