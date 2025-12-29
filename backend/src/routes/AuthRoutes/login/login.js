@@ -73,6 +73,20 @@ router.post('/', async (req, res) => {
       }
     });
 
+    // Log successful login
+    await prisma.auditLog.create({
+      data: {
+        userId: user.id,
+        action: 'LOGIN',
+        details: JSON.stringify({
+          loginType: user.loginType,
+          role: user.assignedRole?.name,
+        }),
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+      },
+    });
+
     // Compose the safe user info to send in response
     const safeUser = {
       id: user.id,

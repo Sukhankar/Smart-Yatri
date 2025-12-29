@@ -86,6 +86,7 @@ model UserLogin {
   travelHistory TravelHistory[]
   notifications Notification[]
   buses      Bus[]
+  auditLogs  AuditLog[]
   
   // Manager approvals
   passApprovalsAsManager PassApproval[] @relation("passApprovalManager")
@@ -435,4 +436,44 @@ model PricingRule {
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+}
+
+//////////////////////////////
+// AUDIT LOGS
+//////////////////////////////
+
+model AuditLog {
+  id          Int       @id @default(autoincrement())
+  userId      Int?
+  user        UserLogin? @relation(fields: [userId], references: [id])
+
+  action      String    // e.g., LOGIN, CREATE_USER, UPDATE_BUS, etc.
+  details     String?   // JSON string with additional details
+  ipAddress   String?
+  userAgent   String?
+
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+//////////////////////////////
+// SYSTEM SETTINGS
+//////////////////////////////
+
+model SystemSetting {
+  id          Int       @id @default(autoincrement())
+  key         String    @unique
+  value       String
+  description String?
+  type        String    @default("string") // string, number, boolean, json
+  category    String?   // e.g., GENERAL, SECURITY, PAYMENT
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([key])
+  @@index([category])
 }

@@ -126,3 +126,123 @@ export async function seedRoleData() {
 
   console.log("✅ Roles & Permissions seeded safely (only ONCE per db, no duplicates)");
 }
+
+export async function seedSystemSettings() {
+  const settingsData = [
+    {
+      key: 'APP_NAME',
+      value: 'Bus Ticket Booking System',
+      description: 'Application name displayed throughout the system',
+      type: 'string',
+      category: 'GENERAL',
+    },
+    {
+      key: 'APP_VERSION',
+      value: '1.0.0',
+      description: 'Current application version',
+      type: 'string',
+      category: 'GENERAL',
+    },
+    {
+      key: 'MAINTENANCE_MODE',
+      value: 'false',
+      description: 'Enable maintenance mode to disable user access',
+      type: 'boolean',
+      category: 'GENERAL',
+    },
+    {
+      key: 'DEFAULT_TIMEZONE',
+      value: 'Asia/Kolkata',
+      description: 'Default timezone for the application',
+      type: 'string',
+      category: 'GENERAL',
+    },
+    {
+      key: 'SESSION_TIMEOUT',
+      value: '60',
+      description: 'Session timeout in minutes',
+      type: 'number',
+      category: 'SECURITY',
+    },
+    {
+      key: 'PASSWORD_MIN_LENGTH',
+      value: '8',
+      description: 'Minimum password length requirement',
+      type: 'number',
+      category: 'SECURITY',
+    },
+    {
+      key: 'MAX_LOGIN_ATTEMPTS',
+      value: '5',
+      description: 'Maximum failed login attempts before lockout',
+      type: 'number',
+      category: 'SECURITY',
+    },
+    {
+      key: 'ENABLE_2FA',
+      value: 'false',
+      description: 'Enable two-factor authentication',
+      type: 'boolean',
+      category: 'SECURITY',
+    },
+    {
+      key: 'PAYMENT_GATEWAY',
+      value: 'RAZORPAY',
+      description: 'Payment gateway provider',
+      type: 'string',
+      category: 'PAYMENT',
+    },
+    {
+      key: 'CURRENCY',
+      value: 'INR',
+      description: 'Default currency for transactions',
+      type: 'string',
+      category: 'PAYMENT',
+    },
+    {
+      key: 'TAX_RATE',
+      value: '18',
+      description: 'Tax rate percentage for payments',
+      type: 'number',
+      category: 'PAYMENT',
+    },
+    {
+      key: 'EMAIL_ENABLED',
+      value: 'true',
+      description: 'Enable email notifications',
+      type: 'boolean',
+      category: 'NOTIFICATION',
+    },
+    {
+      key: 'SMS_ENABLED',
+      value: 'false',
+      description: 'Enable SMS notifications',
+      type: 'boolean',
+      category: 'NOTIFICATION',
+    },
+    {
+      key: 'PUSH_ENABLED',
+      value: 'true',
+      description: 'Enable push notifications',
+      type: 'boolean',
+      category: 'NOTIFICATION',
+    },
+    {
+      key: 'NOTIFICATION_FROM_EMAIL',
+      value: 'noreply@busticket.com',
+      description: 'Sender email address for notifications',
+      type: 'string',
+      category: 'NOTIFICATION',
+    },
+  ];
+
+  for (const setting of settingsData) {
+    await prisma.systemSetting.upsert({
+      where: { key: setting.key },
+      update: setting,
+      create: setting,
+    });
+  }
+
+  console.log("✅ System settings seeded");
+}

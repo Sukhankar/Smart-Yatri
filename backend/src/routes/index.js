@@ -151,9 +151,13 @@ router.use("/users", usersRoute);
 // Admin: ticket session management (stored in MongoDB via Mongoose)
 import adminTicketSessionsRoute from "./admin/ticket-sessions.js";
 import adminPricingRulesRoute from "./admin/pricing-rules.js";
+import adminAuditLogsRoute from "./admin/audit-logs.js";
+import adminSystemSettingsRoute from "./admin/system-settings.js";
 router.use("/admin", adminLimiter); // Apply to all /admin routes
 router.use("/admin/ticket-sessions", adminTicketSessionsRoute);
 router.use("/admin/pricing-rules", adminPricingRulesRoute);
+router.use("/admin/audit-logs", adminAuditLogsRoute);
+router.use("/admin/system-settings", adminSystemSettingsRoute);
 
 // Reports/Dashboard stats routes
 import reportsRoute from "./reports/dashboard-stats.js";
