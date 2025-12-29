@@ -85,6 +85,7 @@ model UserLogin {
   tickets    Ticket[]
   travelHistory TravelHistory[]
   notifications Notification[]
+  buses      Bus[]
   
   // Manager approvals
   passApprovalsAsManager PassApproval[] @relation("passApprovalManager")
@@ -273,8 +274,18 @@ model Bus {
   departureTime  DateTime
   arrivalTime    DateTime
   totalSeats     Int
+  active         Boolean   @default(true)
+
+  conductorId    Int?
+  conductor      UserLogin? @relation(fields: [conductorId], references: [id])
+
+  routeId        Int?
+  route          Route?    @relation(fields: [routeId], references: [id])
 
   bookings       Booking[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 model Booking {
@@ -348,6 +359,7 @@ model Route {
   scheduleTime  String    // JSON array of schedule times
   active        Boolean   @default(true)
   
+  buses         Bus[]
   tickets       Ticket[]
   travelHistory TravelHistory[]
   
