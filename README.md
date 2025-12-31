@@ -132,7 +132,9 @@ frontend/
 ├── public/               # Public static files
 └── package.json          # Dependencies and scripts
 ```
-🤝 Contributing
+
+
+## 🤝 Contributing
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
 Fork the Project
@@ -145,10 +147,12 @@ Push to the Branch (git push origin feature/AmazingFeature)
 
 Open a Pull Request
 
-📄 License
+
+
+## 📄 License
 Distributed under the MIT License. See LICENSE for more information.
 
-<div align="center"> <sub>Built with ❤️ by <a href="https://www.google.com/search?q=https://github.com/your-username">Your Name</a></sub> </div>
+<div align="center"> <sub>Built with ❤️ by <a href="https://github.com/Sukhankar">Sukhankar Sunil Hanaminahal</a></sub> </div>
 
 
 -----
