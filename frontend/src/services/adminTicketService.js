@@ -73,6 +73,51 @@ export const adminTicketService = {
     if (!data.success) throw new Error(data.error || 'Failed to update status');
     return data;
   },
+
+  // Create a ticket on behalf of a user (admin/manager may pass userId)
+  async createTicketForUser({ routeId, ticketType = 'DAILY', userId, targetRole }) {
+    const body = { routeId, ticketType };
+    if (userId != null) body.userId = userId;
+    if (targetRole) body.targetRole = targetRole;
+    const res = await fetch(`${SERVER_URL}/api/tickets/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Failed to create ticket');
+    return data;
+  },
+
+  // Create a pass on behalf of a user
+  async createPassForUser({ type = 'MONTHLY', userId, targetRole }) {
+    const body = { type };
+    if (userId != null) body.userId = userId;
+    if (targetRole) body.targetRole = targetRole;
+    const res = await fetch(`${SERVER_URL}/api/passes/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Failed to create pass');
+    return data;
+  },
+  
+  // Issue ticket/pass for a session (admin only)
+  async issueForSession(sessionId, payload) {
+    const res = await fetch(`${SERVER_URL}/api/admin/ticket-sessions/${sessionId}/issue`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Failed to issue for session');
+    return data;
+  },
 };
 
 

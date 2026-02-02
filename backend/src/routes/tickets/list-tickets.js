@@ -12,8 +12,15 @@ router.get('/', async (req, res) => {
   try {
     const { user } = await validateSession(req);
 
+    // Include tickets assigned to this user OR unassigned/broadcast tickets matching user's role
+    const userRole = user.assignedRole?.name ? user.assignedRole.name.toUpperCase() : (user.loginType || 'REGULAR').toUpperCase();
     const tickets = await prisma.ticket.findMany({
-      where: { userId: user.id },
+      where: {
+        OR: [
+          { userId: user.id },
+          { userId: null, targetRole: userRole },
+        ],
+      },
       include: {
         route: {
           select: {

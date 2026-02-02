@@ -66,20 +66,20 @@ function App() {
         
         {/* Manager routes */}
         <Route path="/manager/dashboard" element={<ManagerDashboard />} />
-        <Route path="/manager/approve-passes" element={<ApprovePasses />} />
         <Route path="/manager/routes" element={<ManageRoutes />} />
         <Route path="/manager/buses" element={<ManageBuses />} />
         <Route path="/manager/users" element={<ManageUsers />} />
-        <Route path="/manager/verify-payment" element={<VerifyPayment />} />
+        <Route path="/manager/approve-passes" element={<AdminVerification />} />
+        <Route path="/manager/verify-payment" element={<AdminVerification />} />
         <Route path="/manager/reports" element={<Reports />} />
         
         {/* Admin routes */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/approve-passes" element={<AdminApprovePasses />} />
         <Route path="/admin/routes" element={<AdminManageRoutes />} />
         <Route path="/admin/buses" element={<AdminManageBuses />} />
         <Route path="/admin/users" element={<AdminManageUsers />} />
-        <Route path="/admin/verify-payment" element={<AdminVerifyPayment />} />
+        <Route path="/admin/approve-passes" element={<AdminVerification />} />
+        <Route path="/admin/verify-payment" element={<AdminVerification />} />
         <Route path="/admin/reports" element={<AdminReports />} />
         <Route path="/admin/audit" element={<AuditLogs />} />
         <Route path="/admin/config" element={<SystemConfig />} />

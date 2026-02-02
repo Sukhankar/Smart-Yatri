@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import { adminTicketService } from '../../services/adminTicketService';
+import { routeService } from '../../services/routeService';
+import { userService } from '../../services/userService';
 
 // Centralized user type pricing rules, must match backend logic!
 const USER_PRICING_RULES = {
@@ -45,9 +47,36 @@ export default function ManageTickets() {
   const [modalMode, setModalMode] = useState('add'); // 'add' or 'edit'
   const [form, setForm] = useState(emptySession);
   const [selectedSessions, setSelectedSessions] = useState([]);
+  const [showIssueModal, setShowIssueModal] = useState(false);
+  const [issueSession, setIssueSession] = useState(null);
+  const [issueKind, setIssueKind] = useState('ticket');
+  const [issueUserId, setIssueUserId] = useState('');
+  const [issueUserType, setIssueUserType] = useState('STUDENT');
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [userSearchResults, setUserSearchResults] = useState([]);
+  const [userSearchLoading, setUserSearchLoading] = useState(false);
+  const [userSearchTimeout, setUserSearchTimeout] = useState(null);
+  const [issueTicketType, setIssueTicketType] = useState('DAILY');
+  const [issuePassType, setIssuePassType] = useState('MONTHLY');
+  const [issueLoading, setIssueLoading] = useState(false);
+  
+  const [quickKind, setQuickKind] = useState('ticket');
+  const [quickTicketType, setQuickTicketType] = useState('DAILY');
+  const [quickPassType, setQuickPassType] = useState('MONTHLY');
+  const [routes, setRoutes] = useState([]);
+  const [selectedRouteId, setSelectedRouteId] = useState('');
 
   useEffect(() => {
     loadSessions();
+    // load active routes for manual ticket creation
+    (async () => {
+      try {
+        const r = await routeService.listRoutes(true);
+        setRoutes(r.routes || []);
+      } catch (err) {
+        setRoutes([]);
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.status, filters.routeSearch, filters.fromDate, filters.toDate]);
 
@@ -112,6 +141,69 @@ export default function ManageTickets() {
     }
   };
 
+  const openIssueModal = (session) => {
+    setIssueSession(session);
+    setIssueKind('ticket');
+    setIssueUserId('');
+    setIssueTicketType('DAILY');
+    setIssuePassType('MONTHLY');
+    setShowIssueModal(true);
+  };
+
+  const handleIssueSubmit = async (e) => {
+    e.preventDefault();
+    if (!issueUserId) {
+      setError('User ID is required to issue');
+      return;
+    }
+    try {
+      setIssueLoading(true);
+      const payload = {
+        kind: issueKind,
+        userId: Number(issueUserId),
+      };
+      if (issueKind === 'ticket') payload.ticketType = issueTicketType;
+      else payload.passType = issuePassType;
+
+      await adminTicketService.issueForSession(issueSession._id, payload);
+      setShowIssueModal(false);
+      await loadSessions();
+    } catch (err) {
+      setError(err.message || 'Failed to issue');
+    } finally {
+      setIssueLoading(false);
+    }
+  };
+
+  const handleUserSearchChange = (val) => {
+    setUserSearchQuery(val);
+    setIssueUserId('');
+    if (userSearchTimeout) clearTimeout(userSearchTimeout);
+    if (!val || val.length < 2) {
+      setUserSearchResults([]);
+      return;
+    }
+    const t = setTimeout(async () => {
+      try {
+        setUserSearchLoading(true);
+        // Filter search by selected user type (loginType) when provided
+        const res = await userService.listUsers({ search: val, loginType: issueUserType });
+        setUserSearchResults(res.users || []);
+      } catch (err) {
+        setUserSearchResults([]);
+      } finally {
+        setUserSearchLoading(false);
+      }
+    }, 300);
+    setUserSearchTimeout(t);
+  };
+
+  const selectUserFromSearch = (u) => {
+    setIssueUserId(u.id);
+    setUserSearchQuery(u.profile?.fullName || u.username || u.email || (`#${u.id}`));
+    setUserSearchResults([]);
+  };
+
   const handleToggleStatus = async (session) => {
     try {
       setLoading(true);
@@ -174,6 +266,28 @@ export default function ManageTickets() {
     }
   };
 
+  // Unified quick create/issue handler (session optional)
+  const handleCreateOrIssue = async () => {
+    setError('');
+    if (!quickKind) { setError('Select kind'); return; }
+    try {
+      setIssueLoading(true);
+      // Manual create — create for selected role (no specific user input here)
+      if (quickKind === 'ticket') {
+        if (!selectedRouteId) { setError('Select a route for ticket creation'); return; }
+        await adminTicketService.createTicketForUser({ routeId: Number(selectedRouteId), ticketType: quickTicketType, targetRole: issueUserType });
+      } else {
+        await adminTicketService.createPassForUser({ type: quickPassType, targetRole: issueUserType });
+      }
+      await loadSessions();
+      setError('');
+    } catch (err) {
+      setError(err.message || 'Failed to create/issue');
+    } finally {
+      setIssueLoading(false);
+    }
+  };
+
   const handleModalChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({
@@ -181,19 +295,19 @@ export default function ManageTickets() {
       [name]: value,
     }));
   };
-
   const handleModalSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
     try {
-      setLoading(true);
-
       const payload = {
         ...form,
         totalSeats: Number(form.totalSeats),
         availableSeats: Number(form.availableSeats),
-        basePrice: Number(form.basePrice),
       };
+      // optional: if admin wants to attach a target role/user while creating session
+      if (issueUserId) payload.userId = Number(issueUserId);
+      else if (issueUserType) payload.targetRole = issueUserType;
 
       if (modalMode === 'add') {
         await adminTicketService.createSession(payload);
@@ -218,7 +332,7 @@ export default function ManageTickets() {
         <div className="mb-8 flex flex-col sm:flex-row items-start justify-between gap-4">
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-red-700 to-pink-600 bg-clip-text text-transparent mb-2">
-              Manage Ticket Sessions
+              Manage Sessions
             </h1>
             <p className="text-gray-600">
               Configure routes, timings, seats and dynamic pricing for different user types.
@@ -250,6 +364,91 @@ export default function ManageTickets() {
                 </button>
               </>
             )}
+
+              {/* Modal: Issue Ticket/Pass */}
+              {showIssueModal && issueSession && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                  <div className="relative bg-white rounded-2xl p-4 sm:p-6 w-full max-w-md mx-2 sm:mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
+                    <button
+                      onClick={() => setShowIssueModal(false)}
+                      className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold z-10 focus:outline-none"
+                      aria-label="Close"
+                    >
+                      &times;
+                    </button>
+                    <div className="mb-2">
+                      <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Issue {issueKind === 'ticket' ? 'Ticket' : 'Pass'} for Session</h2>
+                      <p className="text-sm text-gray-500 mt-1">Session: {issueSession.title}</p>
+                    </div>
+                    {error && <div className="mb-2 text-red-500">{error}</div>}
+                    <form onSubmit={handleIssueSubmit} className="space-y-4 mt-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Kind</label>
+                        <select value={issueKind} onChange={(e) => setIssueKind(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
+                          <option value="ticket">Ticket</option>
+                          <option value="pass">Pass</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Target User</label>
+                        <div className="flex gap-2">
+                          <select value={issueUserType} onChange={(e)=>setIssueUserType(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
+                            <option value="STUDENT">Student</option>
+                            <option value="STAFF">Staff</option>
+                            <option value="REGULAR">Regular</option>
+                          </select>
+                          <input
+                            name="userSearch"
+                            value={userSearchQuery || issueUserId}
+                            onChange={(e) => handleUserSearchChange(e.target.value)}
+                            placeholder="Search name, username or email (min 2 chars)"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-xl bg-gray-50"
+                          />
+                        </div>
+                        {userSearchLoading && <div className="text-xs text-gray-500 mt-1">Searching...</div>}
+                        {userSearchResults.length > 0 && (
+                          <ul className="mt-2 bg-white border border-gray-200 rounded-md max-h-40 overflow-y-auto">
+                            {userSearchResults.map((u) => (
+                              <li
+                                key={u.id}
+                                onClick={() => selectUserFromSearch(u)}
+                                className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                              >
+                                {u.profile?.fullName || u.username} {u.email ? `— ${u.email}` : ''} <span className="text-xs text-gray-400">(#{u.id})</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      {issueKind === 'ticket' ? (
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">Ticket Type</label>
+                          <select value={issueTicketType} onChange={(e) => setIssueTicketType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
+                            <option value="DAILY">Daily</option>
+                            <option value="MONTHLY">Monthly</option>
+                            <option value="YEARLY">Yearly</option>
+                          </select>
+                        </div>
+                      ) : (
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">Pass Type</label>
+                          <select value={issuePassType} onChange={(e) => setIssuePassType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
+                            <option value="MONTHLY">Monthly</option>
+                            <option value="YEARLY">Yearly</option>
+                          </select>
+                        </div>
+                      )}
+
+                      <div className="flex gap-3 justify-end mt-4">
+                        <button type="button" onClick={() => setShowIssueModal(false)} className="bg-gray-100 text-gray-700 rounded-xl px-4 py-2 border border-gray-200 hover:bg-gray-200 text-sm font-semibold">Cancel</button>
+                        <button type="submit" disabled={issueLoading} className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl px-6 py-2 shadow font-semibold text-sm">{issueLoading ? 'Issuing...' : 'Issue'}</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             <button
               type="button"
               onClick={handleAddClick}
@@ -257,6 +456,75 @@ export default function ManageTickets() {
             >
               + Add Session
             </button>
+          </div>
+        </div>
+        {/* Create / Issue single form */}
+        <div className="w-full mt-4">
+          <div className="bg-white/80 rounded-2xl shadow-xl border border-gray-200/50 p-4">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">Create / Issue Ticket or Pass</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Kind</label>
+                <select className="w-full px-3 py-2 border rounded-xl" value={quickKind} onChange={(e)=>setQuickKind(e.target.value)}>
+                  <option value="ticket">Ticket</option>
+                  <option value="pass">Pass</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Target User Type</label>
+                <select value={issueUserType} onChange={(e)=>setIssueUserType(e.target.value)} className="w-full px-3 py-2 border rounded-xl">
+                  <option value="STUDENT">Student</option>
+                  <option value="STAFF">Staff</option>
+                  <option value="REGULAR">Regular</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+              {quickKind === 'ticket' ? (
+                <>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Ticket Type</label>
+                    <select className="w-full px-3 py-2 border rounded-xl" value={quickTicketType} onChange={(e)=>setQuickTicketType(e.target.value)}>
+                      <option value="DAILY">Daily</option>
+                      <option value="MONTHLY">Monthly</option>
+                      <option value="YEARLY">Yearly</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Route</label>
+                    <select required className="w-full px-3 py-2 border rounded-xl" value={selectedRouteId} onChange={(e)=>setSelectedRouteId(e.target.value)}>
+                      <option value="">Select route</option>
+                      {routes.map(r=> (
+                        <option key={r.id} value={r.id}>{r.name}</option>
+                      ))}
+                    </select>
+                    {routes.length === 0 && <div className="text-xs text-gray-500 mt-1">No active routes available. Add routes under Manage Routes.</div>}
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">This will create tickets for the selected role; specific user assignment is not required here.</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Pass Type</label>
+                    <select className="w-full px-3 py-2 border rounded-xl" value={quickPassType} onChange={(e)=>setQuickPassType(e.target.value)}>
+                      <option value="MONTHLY">Monthly</option>
+                      <option value="YEARLY">Yearly</option>
+                    </select>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">This will create passes for the selected role; specific user assignment is not required here.</p>
+                  </div>
+                  <div />
+                </>
+              )}
+            </div>
+
+            <div className="flex justify-end">
+              <button onClick={handleCreateOrIssue} className="px-4 py-2 bg-indigo-600 text-white rounded-xl">{issueLoading ? 'Processing...' : 'Create / Issue'}</button>
+            </div>
           </div>
         </div>
 
@@ -413,6 +681,12 @@ export default function ManageTickets() {
                             Edit
                           </button>
                           <button
+                            onClick={() => openIssueModal(session)}
+                            className="bg-gradient-to-r from-indigo-500 to-violet-500 text-white rounded-xl px-3 py-1 shadow hover:from-indigo-600 hover:to-violet-600 transition-all duration-200 font-semibold text-xs"
+                          >
+                            Issue
+                          </button>
+                          <button
                             onClick={() => handleToggleStatus(session)}
                             className="bg-blue-100 text-blue-700 rounded-xl px-3 py-1 border border-blue-200 hover:bg-blue-200 hover:text-blue-900 transition-all duration-200 font-semibold text-xs"
                           >
@@ -544,7 +818,7 @@ export default function ManageTickets() {
               </button>
               <div className="mb-2">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-red-700 to-pink-600 bg-clip-text text-transparent">
-                  {modalMode === 'add' ? 'Add Ticket Session' : 'Edit Ticket Session'}
+                  {modalMode === 'add' ? 'Add Session' : 'Edit Session'}
                 </h2>
               </div>
               {error && <div className="mb-2 text-red-500">{error}</div>}

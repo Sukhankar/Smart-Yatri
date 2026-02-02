@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
       });
     }
 
-    const { name, stops, scheduleTime, busType, totalSeats } = req.body;
+    const { name, stops, scheduleTime, busType, totalSeats, busIds } = req.body;
 
     if (!name || !stops || !scheduleTime) {
       return res.status(400).json({
@@ -40,6 +40,14 @@ router.post('/', async (req, res) => {
         active: true,
       },
     });
+
+    // Associate buses to the route if provided
+    if (busIds && Array.isArray(busIds) && busIds.length > 0) {
+      await prisma.bus.updateMany({
+        where: { id: { in: busIds } },
+        data: { routeId: route.id },
+      });
+    }
 
     return res.json({
       success: true,

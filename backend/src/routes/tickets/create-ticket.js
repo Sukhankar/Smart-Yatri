@@ -13,7 +13,7 @@ const router = express.Router();
 router.post('/', async (req, res) => {
   try {
     const { user } = await validateSession(req);
-    const { routeId, ticketType = 'DAILY' } = req.body;
+    const { routeId, ticketType = 'DAILY', userId: targetUserId, targetRole } = req.body;
 
     // ticketType validation and normalization
     const validTicketTypes = ['DAILY', 'MONTHLY', 'YEARLY'];
@@ -129,13 +129,43 @@ router.post('/', async (req, res) => {
 
     // Pricing rule fetch (backend has authority)
     const pricingRule = await getOrCreatePricingRule(type);
+    // Determine which user this ticket is being created for.
+    // If `userId` provided, admins/managers may create for that user.
+    // If `targetRole` provided (and no userId), create an unassigned (broadcast) ticket
+    // available to all users of that role/loginType.
+    let targetUser = user;
+    let broadcastRole = null;
+    if (targetUserId != null) {
+      // allow only admins/managers to create for other users
+      const roleName = user.assignedRole?.name || user.loginType;
+      if (!['ADMIN', 'MANAGER'].includes(String(roleName).toUpperCase())) {
+        return res.status(403).json({ success: false, error: 'Unauthorized to create for other users' });
+      }
+      const found = await prisma.userLogin.findUnique({ where: { id: Number(targetUserId) } });
+      if (!found) {
+        return res.status(404).json({ success: false, error: 'Target user not found' });
+      }
+      targetUser = found;
+    } else if (targetRole) {
+      // create a broadcast/unassigned ticket for this role
+      const roleUpper = String(targetRole).toUpperCase();
+      if (!['STUDENT', 'STAFF', 'REGULAR'].includes(roleUpper)) {
+        return res.status(400).json({ success: false, error: 'Invalid targetRole' });
+      }
+      // only admins/managers may create broadcast tickets
+      const roleName = user.assignedRole?.name || user.loginType;
+      if (!['ADMIN', 'MANAGER'].includes(String(roleName).toUpperCase())) {
+        return res.status(403).json({ success: false, error: 'Unauthorized to create broadcast tickets' });
+      }
+      broadcastRole = roleUpper;
+    }
+
     // Priority: assignedRole.name > loginType > default REGULAR
     let userType = 'REGULAR';
-    if (user.assignedRole?.name) {
-      // Normalize: Prisma role 'STUDENT', 'STAFF', etc
-      userType = user.assignedRole.name.toUpperCase();
-    } else if (user.loginType) {
-      userType = user.loginType.toUpperCase();
+    if (targetUser.assignedRole?.name) {
+      userType = targetUser.assignedRole.name.toUpperCase();
+    } else if (targetUser.loginType) {
+      userType = targetUser.loginType.toUpperCase();
     }
     let amount = pricingRule.regularPrice;
     if (userType === 'STUDENT') {
@@ -145,27 +175,36 @@ router.post('/', async (req, res) => {
     }
 
     // Create the ticket record (PENDING payment at this point)
+    const ticketData = {
+      routeId: parseInt(routeId),
+      ticketType: type,
+      paymentStatus: 'PENDING',
+      purchaseDate: now,
+      validUntil: validUntil,
+    };
+    if (broadcastRole) {
+      ticketData.targetRole = broadcastRole;
+      ticketData.userId = null;
+    } else {
+      ticketData.userId = targetUser.id;
+    }
+
     const ticket = await prisma.ticket.create({
-      data: {
-        userId: user.id,
-        routeId: parseInt(routeId),
-        ticketType: type,
-        paymentStatus: 'PENDING',
-        purchaseDate: now,
-        validUntil: validUntil,
-      },
+      data: ticketData,
       include: { route: true },
     });
 
     // Create payment record and link to user (may be linked to ticket in future via ticketId)
+    const paymentData = {
+      amount,
+      status: 'PENDING',
+      method: 'ONLINE',
+      description: `Ticket purchase: ${type} for route ${route.name}`,
+    };
+    if (!broadcastRole) paymentData.userId = targetUser.id;
+
     const payment = await prisma.payment.create({
-      data: {
-        userId: user.id,
-        amount,
-        status: 'PENDING',
-        method: 'ONLINE', // placeholder, see schema Payment.method docs
-        description: `Ticket purchase: ${type} for route ${route.name}`,
-      },
+      data: paymentData,
     });
 
     // Simulate payment success (real code should integrate gateway)
@@ -181,15 +220,18 @@ router.post('/', async (req, res) => {
       include: { route: true },
     });
 
-    // Create notification to the user
-    await prisma.notification.create({
-      data: {
-        userId: user.id,
-        title: 'Ticket Purchased',
-        message: `Your ${type.toLowerCase()} ticket for route ${route.name} has been purchased successfully.`,
-        type: 'SUCCESS',
-      },
-    });
+    // Create notification: if created for a specific user, notify them; if broadcast, create a broadcast notification
+    const notifData = {
+      title: 'Ticket Issued',
+      message: `A ${type.toLowerCase()} ticket for route ${route.name} has been issued.`,
+      type: 'SUCCESS',
+    };
+    if (broadcastRole) {
+      notifData.broadcastRole = broadcastRole;
+    } else {
+      notifData.userId = targetUser.id;
+    }
+    await prisma.notification.create({ data: notifData });
 
     return res.json({
       success: true,

@@ -118,7 +118,7 @@ router.patch('/:id', async (req, res) => {
     }
 
     const { id } = req.params;
-    const { name, stops, scheduleTime, active } = req.body;
+    const { name, stops, scheduleTime, active, busIds } = req.body;
 
     const updateData = {};
     if (name) updateData.name = name;
@@ -130,6 +130,22 @@ router.patch('/:id', async (req, res) => {
       where: { id: parseInt(id) },
       data: updateData,
     });
+
+    // Handle bus associations if provided
+    if (busIds && Array.isArray(busIds)) {
+      // First, remove all buses from this route
+      await prisma.bus.updateMany({
+        where: { routeId: parseInt(id) },
+        data: { routeId: null },
+      });
+      // Then, add the new buses
+      if (busIds.length > 0) {
+        await prisma.bus.updateMany({
+          where: { id: { in: busIds } },
+          data: { routeId: parseInt(id) },
+        });
+      }
+    }
 
     return res.json({
       success: true,

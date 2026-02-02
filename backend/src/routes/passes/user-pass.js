@@ -12,8 +12,15 @@ router.get('/', async (req, res) => {
   try {
     const { user } = await validateSession(req);
 
+    // Try to find a user-specific pass first; if none, find an active broadcast pass for user's role
+    const userRole = user.assignedRole?.name ? user.assignedRole.name.toUpperCase() : (user.loginType || 'REGULAR').toUpperCase();
     const pass = await prisma.pass.findFirst({
-      where: { userId: user.id },
+      where: {
+        OR: [
+          { userId: user.id },
+          { userId: null, targetRole: userRole, status: 'ACTIVE' },
+        ],
+      },
       include: {
         payments: {
           orderBy: { createdAt: 'desc' },

@@ -192,13 +192,15 @@ enum ApprovalStatus {
 
 model Pass {
   id           Int        @id @default(autoincrement())
-  userId       Int
-  user         UserLogin  @relation(fields: [userId], references: [id])
+  userId       Int?
+  user         UserLogin? @relation(fields: [userId], references: [id])
 
   passCode     String     @unique
   type         String     // DAILY, WEEKLY, MONTHLY, ANNUAL
   price        Int        @default(0)  // In rupees or cents
   status       PassStatus @default(PENDING)
+  // If set, this pass is unassigned and available to all users of this role/loginType
+  targetRole   String?
 
   startDate    DateTime
   endDate      DateTime
@@ -245,8 +247,8 @@ model PaymentApproval {
 model Payment {
   id           Int              @id @default(autoincrement())
 
-  userId       Int
-  user         UserLogin        @relation(fields: [userId], references: [id])
+  userId       Int?
+  user         UserLogin?       @relation(fields: [userId], references: [id])
 
   passId       Int?
   pass         Pass?            @relation(fields: [passId], references: [id])
@@ -307,11 +309,13 @@ model Booking {
 
 model Ticket {
   id            Int       @id @default(autoincrement())
-  userId        Int
-  user          UserLogin @relation(fields: [userId], references: [id])
+  userId        Int?
+  user          UserLogin? @relation(fields: [userId], references: [id])
   
   routeId       Int?
   route         Route?    @relation(fields: [routeId], references: [id])
+  // If set, this ticket is unassigned and available to all users of this role/loginType
+  targetRole    String?
   
   purchaseDate  DateTime  @default(now())
   paymentStatus PaymentStatus @default(PENDING)

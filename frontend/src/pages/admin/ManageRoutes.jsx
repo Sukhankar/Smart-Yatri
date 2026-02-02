@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/Sidebar';
 import { routeService } from '../../services/routeService';
+import { busService } from '../../services/busService';
 
 export default function AdminManageRoutes() {
   const [routes, setRoutes] = useState([]);
+  const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingRoute, setEditingRoute] = useState(null);
@@ -13,27 +15,41 @@ export default function AdminManageRoutes() {
     scheduleTime: '',
     busType: '',
     totalSeats: '',
+    selectedBusIds: [],
   });
 
   useEffect(() => {
-    loadRoutes();
+    loadInitialData();
   }, []);
 
-  const loadRoutes = async () => {
+  const loadInitialData = async () => {
     setLoading(true);
     try {
-      const res = await routeService.listRoutes();
-      setRoutes(res.routes || []);
+      const [routesRes, busesRes] = await Promise.all([
+        routeService.listRoutes(),
+        busService.listBuses(),
+      ]);
+      setRoutes(routesRes.routes || []);
+      setBuses(busesRes.buses || []);
     } catch (err) {
-      console.error('Error loading routes:', err);
+      console.error('Error loading data:', err);
     } finally {
       setLoading(false);
     }
   };
 
+  const loadRoutes = async () => {
+    try {
+      const res = await routeService.listRoutes();
+      setRoutes(res.routes || []);
+    } catch (err) {
+      console.error('Error loading routes:', err);
+    }
+  };
+
   const handleCreate = () => {
     setEditingRoute(null);
-    setFormData({ name: '', stops: '', scheduleTime: '', busType: '', totalSeats: '' });
+    setFormData({ name: '', stops: '', scheduleTime: '', busType: '', totalSeats: '', selectedBusIds: [] });
     setShowModal(true);
   };
 
@@ -45,6 +61,7 @@ export default function AdminManageRoutes() {
       scheduleTime: Array.isArray(route.scheduleTime) ? route.scheduleTime.join(', ') : '',
       busType: route.busType || '',
       totalSeats: route.totalSeats ? String(route.totalSeats) : '',
+      selectedBusIds: [],
     });
     setShowModal(true);
   };
@@ -66,22 +83,19 @@ export default function AdminManageRoutes() {
         return;
       }
 
+      const routePayload = {
+        name: formData.name,
+        stops,
+        scheduleTime,
+        busType: formData.busType,
+        totalSeats,
+        busIds: formData.selectedBusIds,
+      };
+
       if (editingRoute) {
-        await routeService.updateRoute(editingRoute.id, {
-          name: formData.name,
-          stops,
-          scheduleTime,
-          busType: formData.busType,
-          totalSeats,
-        });
+        await routeService.updateRoute(editingRoute.id, routePayload);
       } else {
-        await routeService.createRoute({
-          name: formData.name,
-          stops,
-          scheduleTime,
-          busType: formData.busType,
-          totalSeats,
-        });
+        await routeService.createRoute(routePayload);
       }
 
       setShowModal(false);
@@ -297,6 +311,44 @@ export default function AdminManageRoutes() {
                     placeholder="e.g., 40"
                     required
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Assign Buses <span className="text-gray-400 font-normal">(optional)</span>
+                  </label>
+                  <div className="border border-gray-300 rounded-lg p-3 bg-gray-50 max-h-48 overflow-y-auto">
+                    {buses.length === 0 ? (
+                      <p className="text-gray-500 text-sm">No buses available</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {buses.map(bus => (
+                          <label key={bus.id} className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formData.selectedBusIds.includes(bus.id)}
+                              onChange={e => {
+                                if (e.target.checked) {
+                                  setFormData({
+                                    ...formData,
+                                    selectedBusIds: [...formData.selectedBusIds, bus.id]
+                                  });
+                                } else {
+                                  setFormData({
+                                    ...formData,
+                                    selectedBusIds: formData.selectedBusIds.filter(id => id !== bus.id)
+                                  });
+                                }
+                              }}
+                              className="rounded border-gray-300"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {bus.numberPlate} {bus.from && bus.to ? `(${bus.from} - ${bus.to})` : ''}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex gap-2 pt-2">
                   <button

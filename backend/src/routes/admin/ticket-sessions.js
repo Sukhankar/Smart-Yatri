@@ -344,5 +344,147 @@ router.patch('/:id/status', async (req, res) => {
   }
 });
 
+/**
+ * Issue a ticket or pass for a session on behalf of a user (admin/manager)
+ * POST /api/admin/ticket-sessions/:id/issue
+ * Body: { kind: 'ticket'|'pass', userId: number, ticketType?: 'DAILY'|'MONTHLY'|'YEARLY', passType?: 'MONTHLY'|'YEARLY' }
+ */
+router.post('/:id/issue', async (req, res) => {
+  try {
+    const { user } = await validateSession(req);
+    ensureAdmin(user);
+
+    const { id } = req.params;
+    const { kind, userId: targetUserId, ticketType = 'DAILY', passType = 'MONTHLY' } = req.body || {};
+
+    const session = await prisma.TicketSession.findUnique({ where: { id: Number(id) } });
+    if (!session) {
+      return res.status(404).json({ success: false, error: 'Ticket session not found' });
+    }
+
+    // Allow issuing to a specific user (userId) OR as a broadcast to a role (targetRole)
+    let targetUser = null;
+    let broadcastRole = null;
+    if (targetUserId) {
+      targetUser = await prisma.userLogin.findUnique({ where: { id: Number(targetUserId) } });
+      if (!targetUser) {
+        return res.status(404).json({ success: false, error: 'Target user not found' });
+      }
+    } else if (req.body.targetRole) {
+      const roleUpper = String(req.body.targetRole).toUpperCase();
+      if (!['STUDENT', 'STAFF', 'REGULAR'].includes(roleUpper)) {
+        return res.status(400).json({ success: false, error: 'Invalid targetRole' });
+      }
+      broadcastRole = roleUpper;
+    } else {
+      return res.status(400).json({ success: false, error: 'userId or targetRole is required' });
+    }
+
+    if (kind === 'ticket') {
+      // Determine amount based on session prices and user type
+      let userType = 'REGULAR';
+      if (targetUser) {
+        if (targetUser.assignedRole?.name) userType = targetUser.assignedRole.name.toUpperCase();
+        else if (targetUser.loginType) userType = targetUser.loginType.toUpperCase();
+      } else if (broadcastRole) {
+        userType = broadcastRole;
+      }
+
+      let amount = session.regularPrice;
+      if (userType === 'STUDENT') amount = session.studentPrice;
+      else if (userType === 'STAFF') amount = session.staffPrice;
+
+      const now = new Date();
+      let validUntil = new Date(now);
+      if (ticketType === 'DAILY') {
+        validUntil.setHours(23, 59, 59, 999);
+      } else if (ticketType === 'MONTHLY') {
+        validUntil.setMonth(validUntil.getMonth() + 1);
+        validUntil.setHours(0,0,0,0);
+        validUntil = new Date(validUntil.getTime() - 1);
+      } else if (ticketType === 'YEARLY') {
+        validUntil.setFullYear(validUntil.getFullYear() + 1);
+        validUntil.setHours(0,0,0,0);
+        validUntil = new Date(validUntil.getTime() - 1);
+      }
+
+      const ticketData = {
+        routeId: null,
+        ticketType: ticketType,
+        paymentStatus: 'PAID',
+        purchaseDate: now,
+        validUntil,
+      };
+      if (broadcastRole) {
+        ticketData.targetRole = broadcastRole;
+        ticketData.userId = null;
+      } else {
+        ticketData.userId = targetUser.id;
+      }
+
+      const ticket = await prisma.ticket.create({ data: ticketData });
+
+      const paymentData = {
+        amount: Math.round(amount),
+        status: 'PAID',
+        method: 'ADMIN_ISSUE',
+        description: `Issued ticket for session ${session.title}`,
+      };
+      if (!broadcastRole) paymentData.userId = targetUser.id;
+
+      const payment = await prisma.payment.create({ data: paymentData });
+
+      return res.json({ success: true, ticket: ticket, payment });
+    }
+
+    if (kind === 'pass') {
+      // Create a pass (use passType MONTHLY|YEARLY)
+      const now = new Date();
+      const startDate = new Date(now);
+      startDate.setHours(0,0,0,0);
+      const endDate = new Date(startDate);
+      if (passType === 'MONTHLY') endDate.setMonth(endDate.getMonth() + 1);
+      else endDate.setFullYear(endDate.getFullYear() + 1);
+
+      const passCode = `PASS-${Math.random().toString(36).slice(2,10).toUpperCase()}-${passType.substring(0,2)}`;
+
+      const passData = {
+        passCode,
+        type: passType,
+        status: 'ACTIVE',
+        startDate,
+        endDate,
+      };
+      if (broadcastRole) {
+        passData.targetRole = broadcastRole;
+        passData.userId = null;
+      } else {
+        passData.userId = targetUser.id;
+      }
+
+      const pass = await prisma.pass.create({ data: passData });
+
+      const amount = passType === 'MONTHLY' ? 500 : 5000; // keep same pricing as create-pass
+      const paymentData = {
+        passId: pass.id,
+        amount,
+        status: 'PAID',
+        method: 'ADMIN_ISSUE',
+        description: `Issued pass ${passCode} for session ${session.title}`,
+      };
+      if (!broadcastRole) paymentData.userId = targetUser.id;
+
+      const payment = await prisma.payment.create({ data: paymentData });
+
+      return res.json({ success: true, pass, payment });
+    }
+
+    return res.status(400).json({ success: false, error: 'Invalid kind; expected ticket or pass' });
+  } catch (err) {
+    logger.error('Error issuing for ticket session:', err);
+    return res.status(err.status || 500).json({ success: false, error: err.message || 'Failed to issue' });
+  }
+});
+
 export default router;
 

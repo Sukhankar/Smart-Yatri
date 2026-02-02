@@ -13,7 +13,7 @@ const router = express.Router();
 router.post('/', async (req, res) => {
   try {
     const { user } = await validateSession(req);
-    const { type } = req.body;
+    const { type, userId: targetUserId, targetRole } = req.body;
 
     if (!type || (type !== 'MONTHLY' && type !== 'YEARLY')) {
       return res.status(400).json({
@@ -22,10 +22,35 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Check if user already has an active or pending pass
+    // Determine target user or broadcast role
+    let targetUser = user;
+    let broadcastRole = null;
+    if (targetUserId != null) {
+      const roleName = user.assignedRole?.name || user.loginType;
+      if (!['ADMIN', 'MANAGER'].includes(String(roleName).toUpperCase())) {
+        return res.status(403).json({ success: false, error: 'Unauthorized to create for other users' });
+      }
+      const found = await prisma.userLogin.findUnique({ where: { id: Number(targetUserId) } });
+      if (!found) {
+        return res.status(404).json({ success: false, error: 'Target user not found' });
+      }
+      targetUser = found;
+    } else if (targetRole) {
+      const roleUpper = String(targetRole).toUpperCase();
+      if (!['STUDENT', 'STAFF', 'REGULAR'].includes(roleUpper)) {
+        return res.status(400).json({ success: false, error: 'Invalid targetRole' });
+      }
+      const roleName = user.assignedRole?.name || user.loginType;
+      if (!['ADMIN', 'MANAGER'].includes(String(roleName).toUpperCase())) {
+        return res.status(403).json({ success: false, error: 'Unauthorized to create broadcast passes' });
+      }
+      broadcastRole = roleUpper;
+    }
+
+    // Check if target user already has an active or pending pass
     const existingPass = await prisma.pass.findFirst({
       where: {
-        userId: user.id,
+        userId: targetUser.id,
         status: { in: ['ACTIVE', 'PENDING'] },
       },
       orderBy: { createdAt: 'desc' },
@@ -54,30 +79,48 @@ router.post('/', async (req, res) => {
     const passCode = `PASS-${crypto.randomBytes(8).toString('hex').toUpperCase()}-${type.substring(0, 2)}`;
 
     // Create pass
-    const pass = await prisma.pass.create({
-      data: {
-        userId: user.id,
-        passCode,
-        type,
-        status: 'PENDING',
-        startDate,
-        endDate,
-      },
-    });
+    const passData = {
+      passCode,
+      type,
+      status: 'PENDING',
+      startDate,
+      endDate,
+    };
+    if (broadcastRole) {
+      passData.targetRole = broadcastRole;
+      passData.userId = null;
+    } else {
+      passData.userId = targetUser.id;
+    }
+
+    const pass = await prisma.pass.create({ data: passData });
 
     // Create payment record
     const amount = type === 'MONTHLY' ? 500 : 5000; // Configure prices
-    const payment = await prisma.payment.create({
-      data: {
-        userId: user.id,
-        passId: pass.id,
-        amount,
-        status: 'PENDING',
-        method: 'UPI', // Default to UPI/QR payment
-        reference: null,
-        proofUrl: null, // User will upload proof
-      },
-    });
+    const paymentData = {
+      passId: pass.id,
+      amount,
+      status: 'PENDING',
+      method: 'UPI',
+      reference: null,
+      proofUrl: null,
+    };
+    if (!broadcastRole) paymentData.userId = targetUser.id;
+
+    const payment = await prisma.payment.create({ data: paymentData });
+
+    // Create notification for the user or broadcast
+    const notif = {
+      title: 'Pass Created',
+      message: `A ${type.toLowerCase()} pass has been created.`,
+      type: 'SUCCESS',
+    };
+    if (broadcastRole) {
+      notif.broadcastRole = broadcastRole;
+    } else {
+      notif.userId = targetUser.id;
+    }
+    await prisma.notification.create({ data: notif });
 
     return res.json({
       success: true,

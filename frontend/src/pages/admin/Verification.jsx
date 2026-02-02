@@ -286,6 +286,9 @@ export default function Verification() {
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Created At
                   </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
@@ -356,6 +359,46 @@ export default function Verification() {
                       </td>
                       <td className="px-4 py-3 text-xs md:text-sm text-gray-600">
                         {r.createdAt ? new Date(r.createdAt).toLocaleString() : '-'}
+                      </td>
+                      <td className="px-4 py-3 text-xs md:text-sm text-gray-600">
+                        {r.kind === 'PASS' ? (
+                          r.status === 'pending' ? (
+                            <div className="flex gap-2">
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    const id = Number(String(r.id).replace('PASS-', ''));
+                                    await (await import('../../services/passService')).passService.approvePass(id, 'APPROVE', 'ACTIVE');
+                                    await loadData();
+                                  } catch (err) {
+                                    alert(err.message || 'Failed to approve pass');
+                                  }
+                                }}
+                                className="bg-green-500 text-white px-3 py-1 rounded-xl text-xs"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    const id = Number(String(r.id).replace('PASS-', ''));
+                                    await (await import('../../services/passService')).passService.approvePass(id, 'REJECT', 'REJECTED');
+                                    await loadData();
+                                  } catch (err) {
+                                    alert(err.message || 'Failed to reject pass');
+                                  }
+                                }}
+                                className="bg-red-500 text-white px-3 py-1 rounded-xl text-xs"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-gray-500">—</span>
+                          )
+                        ) : (
+                          <span className="text-sm text-gray-500">—</span>
+                        )}
                       </td>
                     </tr>
                   ))
