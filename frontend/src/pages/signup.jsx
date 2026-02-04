@@ -571,21 +571,44 @@ export default function SignupPage() {
 
   // Roles from backend
   const [roles, setRoles] = useState([]);
+  const [rolesLoading, setRolesLoading] = useState(true);
+  const [rolesError, setRolesError] = useState('');
+  
   useEffect(() => {
     let isMounted = true;
     async function fetchRoles() {
       try {
+        setRolesLoading(true);
+        console.log('Fetching roles from:', `${SERVER_URL}/api/permissions/roles`);
         const res = await fetch(`${SERVER_URL}/api/permissions/roles`);
-        if (!res.ok) throw new Error("Could not fetch roles");
+        console.log('Roles response status:', res.status);
+        
+        if (!res.ok) {
+          throw new Error(`Could not fetch roles: ${res.status}`);
+        }
+        
         const data = await res.json();
+        console.log('Roles response data:', data);
+        
         let rolesRaw = Array.isArray(data?.roles)
           ? data.roles
           : Array.isArray(data)
           ? data
           : [];
-        if (isMounted) setRoles(Array.isArray(rolesRaw) ? rolesRaw : []);
-      } catch {
-        if (isMounted) setRoles([]);
+        
+        console.log('Processed roles:', rolesRaw);
+        
+        if (isMounted) {
+          setRoles(Array.isArray(rolesRaw) ? rolesRaw : []);
+          setRolesLoading(false);
+        }
+      } catch (err) {
+        console.error('Error fetching roles:', err);
+        if (isMounted) {
+          setRolesError(err.message);
+          setRoles([]);
+          setRolesLoading(false);
+        }
       }
     }
     fetchRoles();

@@ -410,12 +410,16 @@ model TicketSession {
   title         String
   routeInfo     String
   departureTime DateTime
-  totalSeats    Int
-  availableSeats Int
+  totalSeats    Int?
+  availableSeats Int?
   basePrice     Float
   studentPrice  Float
   staffPrice    Float
   regularPrice  Float
+  monthlyPassPrice Float?
+  yearlyPassPrice  Float?
+  passStartDate    DateTime?
+  passExpiryDate   DateTime?
   status        String    @default("ACTIVE") // ACTIVE, INACTIVE
   
   createdAt     DateTime  @default(now())

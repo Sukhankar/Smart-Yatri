@@ -126,12 +126,30 @@ router.post('/', async (req, res) => {
     }
 
     const depTime = parseDate(departureTime, 'departureTime');
-    const total = parseNumber(totalSeats, 'totalSeats', 1);
+
+    // totalSeats is optional now. If provided, validate it; otherwise leave null/undefined.
+    let total = null;
+    if (totalSeats !== undefined && totalSeats !== null && totalSeats !== '') {
+      total = parseNumber(totalSeats, 'totalSeats', 1);
+    }
+
     const base = parseNumber(basePrice, 'basePrice', 0);
 
-    let available = availableSeats != null ? Number(availableSeats) : total;
-    if (Number.isNaN(available) || available < 0 || available > total) {
-      available = total;
+    // availableSeats is optional. If provided, validate and clamp to total when total is present.
+    let available = null;
+    if (availableSeats !== undefined && availableSeats !== null && availableSeats !== '') {
+      const parsedAvail = Number(availableSeats);
+      if (!Number.isNaN(parsedAvail) && parsedAvail >= 0) {
+        available = parsedAvail;
+      }
+    }
+
+    if (total != null) {
+      // if available not provided, default to total
+      if (available == null) available = total;
+      // clamp available to [0, total]
+      if (available > total) available = total;
+      if (available < 0) available = 0;
     }
 
     // Fetch pricing rule to compute user-type prices server-side

@@ -17,7 +17,7 @@ function deriveUserPricesFromBase(basePrice) {
   const prices = {
     studentPrice: Math.round(base * USER_PRICING_RULES.STUDENT),
     staffPrice: Math.round(base * USER_PRICING_RULES.STAFF),
-    regularPrice: base
+    regularPrice: base,
   };
   return prices;
 }
@@ -25,11 +25,18 @@ function deriveUserPricesFromBase(basePrice) {
 // Corresponds to fields as per TicketSession model/schema
 const emptySession = {
   title: '',
-  routeInfo: '',
+  routeId: '',
   departureTime: '',
-  totalSeats: 40,
-  availableSeats: 40,
+  busNumber: '',
   basePrice: 50,
+  studentPrice: '',
+  staffPrice: '',
+  regularPrice: '',
+  monthlyPassPrice: '',
+  yearlyPassPrice: '',
+  passStartDate: '',
+  passExpiryDate: '',
+  kind: 'session'
 };
 
 export default function ManageTickets() {
@@ -52,6 +59,7 @@ export default function ManageTickets() {
   const [issueKind, setIssueKind] = useState('ticket');
   const [issueUserId, setIssueUserId] = useState('');
   const [issueUserType, setIssueUserType] = useState('STUDENT');
+  const [routes, setRoutes] = useState([]);
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [userSearchResults, setUserSearchResults] = useState([]);
   const [userSearchLoading, setUserSearchLoading] = useState(false);
@@ -59,26 +67,24 @@ export default function ManageTickets() {
   const [issueTicketType, setIssueTicketType] = useState('DAILY');
   const [issuePassType, setIssuePassType] = useState('MONTHLY');
   const [issueLoading, setIssueLoading] = useState(false);
-  
-  const [quickKind, setQuickKind] = useState('ticket');
-  const [quickTicketType, setQuickTicketType] = useState('DAILY');
-  const [quickPassType, setQuickPassType] = useState('MONTHLY');
-  const [routes, setRoutes] = useState([]);
-  const [selectedRouteId, setSelectedRouteId] = useState('');
 
   useEffect(() => {
     loadSessions();
-    // load active routes for manual ticket creation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.status, filters.routeSearch, filters.fromDate, filters.toDate]);
+
+  // Load routes on component mount (separate effect for independent concern)
+  useEffect(() => {
     (async () => {
       try {
         const r = await routeService.listRoutes(true);
         setRoutes(r.routes || []);
       } catch (err) {
+        console.error('Failed to load routes:', err);
         setRoutes([]);
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters.status, filters.routeSearch, filters.fromDate, filters.toDate]);
+  }, []);
 
   async function loadSessions() {
     setLoading(true);
@@ -115,13 +121,20 @@ export default function ManageTickets() {
   const handleEditClick = (session) => {
     setForm({
       title: session.title,
-      routeInfo: session.routeInfo,
+      routeId: session.routeId || '',
       departureTime: session.departureTime
         ? new Date(session.departureTime).toISOString().slice(0, 16)
         : '',
-      totalSeats: session.totalSeats,
-      availableSeats: session.availableSeats,
+      busNumber: session.busNumber || '',
       basePrice: session.basePrice,
+      studentPrice: session.studentPrice || '',
+      staffPrice: session.staffPrice || '',
+      regularPrice: session.regularPrice || '',
+      monthlyPassPrice: session.monthlyPassPrice || '',
+      yearlyPassPrice: session.yearlyPassPrice || '',
+      passStartDate: session.passStartDate || '',
+      passExpiryDate: session.passExpiryDate || '',
+      kind: 'session'
     });
     setModalMode('edit');
     setEditingSession(session);
@@ -189,7 +202,7 @@ export default function ManageTickets() {
         // Filter search by selected user type (loginType) when provided
         const res = await userService.listUsers({ search: val, loginType: issueUserType });
         setUserSearchResults(res.users || []);
-      } catch (err) {
+      } catch {
         setUserSearchResults([]);
       } finally {
         setUserSearchLoading(false);
@@ -266,27 +279,7 @@ export default function ManageTickets() {
     }
   };
 
-  // Unified quick create/issue handler (session optional)
-  const handleCreateOrIssue = async () => {
-    setError('');
-    if (!quickKind) { setError('Select kind'); return; }
-    try {
-      setIssueLoading(true);
-      // Manual create — create for selected role (no specific user input here)
-      if (quickKind === 'ticket') {
-        if (!selectedRouteId) { setError('Select a route for ticket creation'); return; }
-        await adminTicketService.createTicketForUser({ routeId: Number(selectedRouteId), ticketType: quickTicketType, targetRole: issueUserType });
-      } else {
-        await adminTicketService.createPassForUser({ type: quickPassType, targetRole: issueUserType });
-      }
-      await loadSessions();
-      setError('');
-    } catch (err) {
-      setError(err.message || 'Failed to create/issue');
-    } finally {
-      setIssueLoading(false);
-    }
-  };
+  // (old quick create removed)
 
   const handleModalChange = (e) => {
     const { name, value } = e.target;
@@ -300,14 +293,23 @@ export default function ManageTickets() {
     setError('');
     setLoading(true);
     try {
+      // Create session
       const payload = {
-        ...form,
-        totalSeats: Number(form.totalSeats),
-        availableSeats: Number(form.availableSeats),
+        title: form.title,
+        routeId: Number(form.routeId),
+        departureTime: form.departureTime,
+        busNumber: form.busNumber,
+        basePrice: Number(form.basePrice),
+        studentPrice: form.studentPrice ? Number(form.studentPrice) : null,
+        staffPrice: form.staffPrice ? Number(form.staffPrice) : null,
+        regularPrice: form.regularPrice ? Number(form.regularPrice) : null,
+        monthlyPassPrice: form.monthlyPassPrice ? Number(form.monthlyPassPrice) : null,
+        yearlyPassPrice: form.yearlyPassPrice ? Number(form.yearlyPassPrice) : null,
+        passStartDate: form.passStartDate || null,
+        passExpiryDate: form.passExpiryDate || null,
+        // Ensure backend-required routeInfo is included (derive from selected route if not provided)
+        routeInfo: form.routeInfo || (routes.find(r => String(r.id) === String(form.routeId))?.name || ''),
       };
-      // optional: if admin wants to attach a target role/user while creating session
-      if (issueUserId) payload.userId = Number(issueUserId);
-      else if (issueUserType) payload.targetRole = issueUserType;
 
       if (modalMode === 'add') {
         await adminTicketService.createSession(payload);
@@ -317,7 +319,7 @@ export default function ManageTickets() {
       setShowModal(false);
       await loadSessions();
     } catch (err) {
-      setError(err.message || 'Failed to save ticket session');
+      setError(err.message || 'Failed to save session');
     } finally {
       setLoading(false);
     }
@@ -365,90 +367,90 @@ export default function ManageTickets() {
               </>
             )}
 
-              {/* Modal: Issue Ticket/Pass */}
-              {showIssueModal && issueSession && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                  <div className="relative bg-white rounded-2xl p-4 sm:p-6 w-full max-w-md mx-2 sm:mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
-                    <button
-                      onClick={() => setShowIssueModal(false)}
-                      className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold z-10 focus:outline-none"
-                      aria-label="Close"
-                    >
-                      &times;
-                    </button>
-                    <div className="mb-2">
-                      <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Issue {issueKind === 'ticket' ? 'Ticket' : 'Pass'} for Session</h2>
-                      <p className="text-sm text-gray-500 mt-1">Session: {issueSession.title}</p>
+            {/* Modal: Issue Ticket/Pass */}
+            {showIssueModal && issueSession && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <div className="relative bg-white rounded-2xl p-4 sm:p-6 w-full max-w-md mx-2 sm:mx-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
+                  <button
+                    onClick={() => setShowIssueModal(false)}
+                    className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold z-10 focus:outline-none"
+                    aria-label="Close"
+                  >
+                    &times;
+                  </button>
+                  <div className="mb-2">
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">Issue {issueKind === 'ticket' ? 'Ticket' : 'Pass'} for Session</h2>
+                    <p className="text-sm text-gray-500 mt-1">Session: {issueSession.title}</p>
+                  </div>
+                  {error && <div className="mb-2 text-red-500">{error}</div>}
+                  <form onSubmit={handleIssueSubmit} className="space-y-4 mt-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1">Kind</label>
+                      <select value={issueKind} onChange={(e) => setIssueKind(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
+                        <option value="ticket">Ticket</option>
+                        <option value="pass">Pass</option>
+                      </select>
                     </div>
-                    {error && <div className="mb-2 text-red-500">{error}</div>}
-                    <form onSubmit={handleIssueSubmit} className="space-y-4 mt-4">
+
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1">Target User</label>
+                      <div className="flex gap-2">
+                        <select value={issueUserType} onChange={(e)=>setIssueUserType(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
+                          <option value="STUDENT">Student</option>
+                          <option value="STAFF">Staff</option>
+                          <option value="REGULAR">Regular</option>
+                        </select>
+                        <input
+                          name="userSearch"
+                          value={userSearchQuery || issueUserId}
+                          onChange={(e) => handleUserSearchChange(e.target.value)}
+                          placeholder="Search name, username or email (min 2 chars)"
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-xl bg-gray-50"
+                        />
+                      </div>
+                      {userSearchLoading && <div className="text-xs text-gray-500 mt-1">Searching...</div>}
+                      {userSearchResults.length > 0 && (
+                        <ul className="mt-2 bg-white border border-gray-200 rounded-md max-h-40 overflow-y-auto">
+                          {userSearchResults.map((u) => (
+                            <li
+                              key={u.id}
+                              onClick={() => selectUserFromSearch(u)}
+                              className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                            >
+                              {u.profile?.fullName || u.username} {u.email ? `— ${u.email}` : ''} <span className="text-xs text-gray-400">(#{u.id})</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+
+                    {issueKind === 'ticket' ? (
                       <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">Kind</label>
-                        <select value={issueKind} onChange={(e) => setIssueKind(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
-                          <option value="ticket">Ticket</option>
-                          <option value="pass">Pass</option>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Ticket Type</label>
+                        <select value={issueTicketType} onChange={(e) => setIssueTicketType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
+                          <option value="DAILY">Daily</option>
+                          <option value="MONTHLY">Monthly</option>
+                          <option value="YEARLY">Yearly</option>
                         </select>
                       </div>
-
+                    ) : (
                       <div>
-                        <label className="block text-xs font-semibold text-gray-600 mb-1">Target User</label>
-                        <div className="flex gap-2">
-                          <select value={issueUserType} onChange={(e)=>setIssueUserType(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
-                            <option value="STUDENT">Student</option>
-                            <option value="STAFF">Staff</option>
-                            <option value="REGULAR">Regular</option>
-                          </select>
-                          <input
-                            name="userSearch"
-                            value={userSearchQuery || issueUserId}
-                            onChange={(e) => handleUserSearchChange(e.target.value)}
-                            placeholder="Search name, username or email (min 2 chars)"
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-xl bg-gray-50"
-                          />
-                        </div>
-                        {userSearchLoading && <div className="text-xs text-gray-500 mt-1">Searching...</div>}
-                        {userSearchResults.length > 0 && (
-                          <ul className="mt-2 bg-white border border-gray-200 rounded-md max-h-40 overflow-y-auto">
-                            {userSearchResults.map((u) => (
-                              <li
-                                key={u.id}
-                                onClick={() => selectUserFromSearch(u)}
-                                className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                              >
-                                {u.profile?.fullName || u.username} {u.email ? `— ${u.email}` : ''} <span className="text-xs text-gray-400">(#{u.id})</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Pass Type</label>
+                        <select value={issuePassType} onChange={(e) => setIssuePassType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
+                          <option value="MONTHLY">Monthly</option>
+                          <option value="YEARLY">Yearly</option>
+                        </select>
                       </div>
+                    )}
 
-                      {issueKind === 'ticket' ? (
-                        <div>
-                          <label className="block text-xs font-semibold text-gray-600 mb-1">Ticket Type</label>
-                          <select value={issueTicketType} onChange={(e) => setIssueTicketType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
-                            <option value="DAILY">Daily</option>
-                            <option value="MONTHLY">Monthly</option>
-                            <option value="YEARLY">Yearly</option>
-                          </select>
-                        </div>
-                      ) : (
-                        <div>
-                          <label className="block text-xs font-semibold text-gray-600 mb-1">Pass Type</label>
-                          <select value={issuePassType} onChange={(e) => setIssuePassType(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50">
-                            <option value="MONTHLY">Monthly</option>
-                            <option value="YEARLY">Yearly</option>
-                          </select>
-                        </div>
-                      )}
-
-                      <div className="flex gap-3 justify-end mt-4">
-                        <button type="button" onClick={() => setShowIssueModal(false)} className="bg-gray-100 text-gray-700 rounded-xl px-4 py-2 border border-gray-200 hover:bg-gray-200 text-sm font-semibold">Cancel</button>
-                        <button type="submit" disabled={issueLoading} className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl px-6 py-2 shadow font-semibold text-sm">{issueLoading ? 'Issuing...' : 'Issue'}</button>
-                      </div>
-                    </form>
-                  </div>
+                    <div className="flex gap-3 justify-end mt-4">
+                      <button type="button" onClick={() => setShowIssueModal(false)} className="bg-gray-100 text-gray-700 rounded-xl px-4 py-2 border border-gray-200 hover:bg-gray-200 text-sm font-semibold">Cancel</button>
+                      <button type="submit" disabled={issueLoading} className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl px-6 py-2 shadow font-semibold text-sm">{issueLoading ? 'Issuing...' : 'Issue'}</button>
+                    </div>
+                  </form>
                 </div>
-              )}
+              </div>
+            )}
             <button
               type="button"
               onClick={handleAddClick}
@@ -458,76 +460,6 @@ export default function ManageTickets() {
             </button>
           </div>
         </div>
-        {/* Create / Issue single form */}
-        <div className="w-full mt-4">
-          <div className="bg-white/80 rounded-2xl shadow-xl border border-gray-200/50 p-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">Create / Issue Ticket or Pass</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">Kind</label>
-                <select className="w-full px-3 py-2 border rounded-xl" value={quickKind} onChange={(e)=>setQuickKind(e.target.value)}>
-                  <option value="ticket">Ticket</option>
-                  <option value="pass">Pass</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">Target User Type</label>
-                <select value={issueUserType} onChange={(e)=>setIssueUserType(e.target.value)} className="w-full px-3 py-2 border rounded-xl">
-                  <option value="STUDENT">Student</option>
-                  <option value="STAFF">Staff</option>
-                  <option value="REGULAR">Regular</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
-              {quickKind === 'ticket' ? (
-                <>
-                  <div>
-                    <label className="block text-xs text-gray-500 mb-1">Ticket Type</label>
-                    <select className="w-full px-3 py-2 border rounded-xl" value={quickTicketType} onChange={(e)=>setQuickTicketType(e.target.value)}>
-                      <option value="DAILY">Daily</option>
-                      <option value="MONTHLY">Monthly</option>
-                      <option value="YEARLY">Yearly</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-500 mb-1">Route</label>
-                    <select required className="w-full px-3 py-2 border rounded-xl" value={selectedRouteId} onChange={(e)=>setSelectedRouteId(e.target.value)}>
-                      <option value="">Select route</option>
-                      {routes.map(r=> (
-                        <option key={r.id} value={r.id}>{r.name}</option>
-                      ))}
-                    </select>
-                    {routes.length === 0 && <div className="text-xs text-gray-500 mt-1">No active routes available. Add routes under Manage Routes.</div>}
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">This will create tickets for the selected role; specific user assignment is not required here.</p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <label className="block text-xs text-gray-500 mb-1">Pass Type</label>
-                    <select className="w-full px-3 py-2 border rounded-xl" value={quickPassType} onChange={(e)=>setQuickPassType(e.target.value)}>
-                      <option value="MONTHLY">Monthly</option>
-                      <option value="YEARLY">Yearly</option>
-                    </select>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">This will create passes for the selected role; specific user assignment is not required here.</p>
-                  </div>
-                  <div />
-                </>
-              )}
-            </div>
-
-            <div className="flex justify-end">
-              <button onClick={handleCreateOrIssue} className="px-4 py-2 bg-indigo-600 text-white rounded-xl">{issueLoading ? 'Processing...' : 'Create / Issue'}</button>
-            </div>
-          </div>
-        </div>
-
         {/* Filters */}
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -824,6 +756,7 @@ export default function ManageTickets() {
               {error && <div className="mb-2 text-red-500">{error}</div>}
               <form onSubmit={handleModalSubmit} className="space-y-4 mt-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Session Title */}
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-semibold text-gray-600 mb-1">
                       Session Title
@@ -837,20 +770,49 @@ export default function ManageTickets() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
                     />
                   </div>
-                  <div className="sm:col-span-2">
+
+                  {/* Route / Travel Info - fetch from database */}
+                  <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1">
                       Route / Travel Info
                     </label>
-                    <textarea
-                      name="routeInfo"
-                      value={form.routeInfo}
+                    <select
+                      name="routeId"
+                      value={form.routeId}
                       onChange={handleModalChange}
-                      placeholder="e.g. City Center to Campus via Main Road"
-                      rows={2}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100 resize-none"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                    >
+                      <option value="">Select route</option>
+                      {routes.map((r) => (
+                        <option key={r.id} value={r.id}>
+                          {r.name}
+                        </option>
+                      ))}
+                    </select>
+                    {routes.length === 0 && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        No active routes available. Add routes under Manage Routes.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Bus Number */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      Bus Number
+                    </label>
+                    <input
+                      name="busNumber"
+                      value={form.busNumber}
+                      onChange={handleModalChange}
+                      placeholder="e.g. BUS-001"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
                     />
                   </div>
+
+                  {/* Departure Time */}
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1">
                       Departure Time
@@ -864,36 +826,8 @@ export default function ManageTickets() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
                     />
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">
-                      Total Seats
-                    </label>
-                    <input
-                      type="number"
-                      name="totalSeats"
-                      value={form.totalSeats}
-                      min={1}
-                      max={500}
-                      onChange={handleModalChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-600 mb-1">
-                      Available Seats
-                    </label>
-                    <input
-                      type="number"
-                      name="availableSeats"
-                      value={form.availableSeats}
-                      min={0}
-                      max={form.totalSeats || 500}
-                      onChange={handleModalChange}
-                      required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                    />
-                  </div>
+
+                  {/* Base Price */}
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1">
                       Base Price (₹)
@@ -908,36 +842,119 @@ export default function ManageTickets() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-gray-50 focus:border-red-500 focus:ring-2 focus:ring-red-100"
                     />
                   </div>
+
+                  {/* Ticket Pricing */}
+                  <div className="sm:col-span-2 mt-2 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                    <p className="text-xs font-semibold text-blue-700 mb-3">Ticket Pricing</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Student Ticket Price (₹)</label>
+                        <input
+                          type="number"
+                          name="studentPrice"
+                          value={form.studentPrice}
+                          min={0}
+                          onChange={handleModalChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Staff Ticket Price (₹)</label>
+                        <input
+                          type="number"
+                          name="staffPrice"
+                          value={form.staffPrice}
+                          min={0}
+                          onChange={handleModalChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Regular Ticket Price (₹)</label>
+                        <input
+                          type="number"
+                          name="regularPrice"
+                          value={form.regularPrice}
+                          min={0}
+                          onChange={handleModalChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Pass Pricing */}
+                  <div className="sm:col-span-2 mt-2 p-3 bg-green-50 rounded-xl border border-green-100">
+                    <p className="text-xs font-semibold text-green-700 mb-3">Pass Pricing & Dates</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Monthly Pass Price (₹)</label>
+                        <input
+                          type="number"
+                          name="monthlyPassPrice"
+                          value={form.monthlyPassPrice}
+                          min={0}
+                          onChange={handleModalChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-white focus:border-green-500 focus:ring-2 focus:ring-green-100 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Yearly Pass Price (₹)</label>
+                        <input
+                          type="number"
+                          name="yearlyPassPrice"
+                          value={form.yearlyPassPrice}
+                          min={0}
+                          onChange={handleModalChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-white focus:border-green-500 focus:ring-2 focus:ring-green-100 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Pass Start Date</label>
+                        <input
+                          type="date"
+                          name="passStartDate"
+                          value={form.passStartDate}
+                          onChange={handleModalChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-white focus:border-green-500 focus:ring-2 focus:ring-green-100 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Pass Expiry Date</label>
+                        <input
+                          type="date"
+                          name="passExpiryDate"
+                          value={form.passExpiryDate}
+                          onChange={handleModalChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-xl bg-white focus:border-green-500 focus:ring-2 focus:ring-green-100 text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Preview of user-type prices (calculated client-side for admin visibility only) */}
-                <div className="mt-2 p-3 bg-red-50 rounded-xl border border-red-100 text-xs text-gray-700">
-                  <p className="font-semibold mb-1 text-red-700">User Type Prices (preview)</p>
-                  {(() => {
-                    const { studentPrice, staffPrice, regularPrice } =
-                      deriveUserPricesFromBase(form.basePrice);
-                    return (
-                      <div className="flex flex-wrap gap-4">
-                        <span>
-                          <span className="font-semibold text-green-700">Student:</span> ₹
-                          {studentPrice}
-                        </span>
-                        <span>
-                          <span className="font-semibold text-amber-700">Staff:</span> ₹
-                          {staffPrice}
-                        </span>
-                        <span>
-                          <span className="font-semibold text-gray-800">Regular:</span> ₹
-                          {regularPrice}
-                        </span>
-                      </div>
-                    );
-                  })()}
-                  <p className="mt-1 text-[11px] text-gray-500">
-                    Final prices are calculated and stored securely on the server based on this base
-                    price.
+                {/* Info section */}
+                <div className="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-100">
+                  <p className="text-xs font-semibold text-amber-700 mb-2">Session Configuration</p>
+                  <p className="text-xs text-gray-600">
+                    Configure the bus session with route, departure time, bus number, and pricing for both tickets and passes. These details will be used when managing and issuing tickets/passes for this session.
                   </p>
                 </div>
+
+                {/* Session-specific fields (only show when kind is session) */}
+                {form.kind === 'session' && (
+                  <div className="p-3 bg-blue-50 rounded-xl border border-blue-100">
+                    <p className="text-xs font-semibold text-blue-700 mb-2">Session Details</p>
+                    <p className="text-xs text-gray-600 mb-3">
+                      Configure the session properties below. Session titles, route info, and timing are only used when creating a Session.
+                    </p>
+                  </div>
+                )}
 
                 <div className="flex gap-3 justify-end mt-4">
                   <button
@@ -958,7 +975,6 @@ export default function ManageTickets() {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
